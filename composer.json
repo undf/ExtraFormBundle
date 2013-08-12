@@ -16,5 +16,5 @@
     "autoload": {
         "psr-0": { "Undf\\FormBundle": "" }
     },
-    "target-dir": "Undf\\FormBundle",
+    "target-dir": "Undf\\FormBundle"
 }
