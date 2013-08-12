@@ -1,0 +1,20 @@
+{
+    "name": "undf/extra-form-bundle",
+    "description": "This bundle provides you with custom form types and data transformers to use in your forms",
+    "keywords": [],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dani Gonzalez",
+            "email": "daniel.gonzalez@undefined.es"
+        }
+    ],
+    "require": {
+        "vich/uploader-bundle": "~0.8.1"
+    },
+    "autoload": {
+        "psr-0": { "Undf\\FormBundle": "" }
+    },
+    "target-dir": "Undf\\FormBundle",
+}

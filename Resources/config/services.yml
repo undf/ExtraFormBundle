@@ -1,0 +1,7 @@
+services:
+  undf.form.type.image_upload:
+    class: Undf\FormBundle\Form\ImageUploadType
+    arguments:
+      - "@vich_uploader.templating.helper.uploader_helper"
+    tags:
+      - { name: form.type, alias: image_upload }

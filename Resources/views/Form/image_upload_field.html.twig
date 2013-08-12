@@ -1,0 +1,13 @@
+{% block image_upload_widget %}
+    {% spaceless %}
+        <u-image-upload class="profile-pic" ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'" u-file-src="image" u-file-default-src="defaultImage" u-file-name="{{ name_property }}">
+            <div class="edit-img-holder">
+                <img ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
+                {{ form_widget(form[file_property], { 'attr': {'class' : 'hide'} })}}
+                {{ form_widget(form[name_property], { 'attr': {'class' : 'hide', 'ng-model': name_property, 'ng-init': name_property ~ '="' ~ form[name_property].vars.value ~'"'} })}}
+                <a ng-click="removePic()">{{ 'profile.picture.remove'|trans({}, 'FOSUserBundle') }}</a>
+            </div>
+            <a ng-click="uploadFile()">{{ 'profile.picture.upload'|trans({}, 'FOSUserBundle') }}</a>
+        </u-image-upload>
+    {% endspaceless %}
+{% endblock %}
