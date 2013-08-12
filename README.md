@@ -8,4 +8,4 @@ The bundle contains:
 This form type allow including an image upload field with image preview in your form.
 
 
-[1]: https://github.com/undf/ExtraFormBundle/tree/master/Resources/doc/imageUploadType.md
+[1]: https://github.com/undf/ExtraFormBundle/blob/master/Resources/doc/uploadImageType.md
