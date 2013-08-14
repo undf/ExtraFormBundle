@@ -29,7 +29,7 @@ class ImageUploadType extends AbstractType
                 ->add($options['file_property'], 'file', array(
                     'required' => false,
                     'attr' => array(
-                        'class' => 'hide'
+                        'style' => 'display:hidden'
                     )
                 ))
                 ->add($options['name_property'], 'text', array(
@@ -75,6 +75,7 @@ class ImageUploadType extends AbstractType
         $view->vars['default_image_url'] = $options['default_image_url'];
         $view->vars['file_property'] = $options['file_property'];
         $view->vars['name_property'] = $options['name_property'];
+        $view->vars['label'] = false;
 
         try {
             $parentData = $form->getParent()->getData();
