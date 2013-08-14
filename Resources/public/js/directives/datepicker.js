@@ -151,6 +151,9 @@ uFormUtils.directive( 'uDatepicker', ['dateFilter', '$parse', 'datepickerConfig'
       };
 
       scope.$watch('model', function ( dt, olddt ) {
+        if(!dt) {
+            dt = new Date();
+        }
         if(!angular.isDate(dt)) {
           var parts = dt.split('/');
           if(parts.length === 3)
@@ -167,6 +170,9 @@ uFormUtils.directive( 'uDatepicker', ['dateFilter', '$parse', 'datepickerConfig'
 //        }
       });
       scope.$watch('mode', function() {
+        if(!scope.model) {
+            scope.model = new Date();
+        }
         if(!angular.isDate(scope.model)) {
           var parts = scope.model.split('/');
           if(parts.length === 3)
