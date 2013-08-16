@@ -110,8 +110,6 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                         if (scope[name].$invalid) {
                             //Prevent the form to submit when pressing enter
                             event.preventDefault();
-                            //Send ajax request
-                            scope.save();
 
                         }
                         else if (!attr.action) {
