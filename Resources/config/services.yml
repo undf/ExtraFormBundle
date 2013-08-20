@@ -3,5 +3,8 @@ services:
     class: Undf\FormBundle\Form\ImageUploadType
     arguments:
       - "@vich_uploader.templating.helper.uploader_helper"
+      - "@validator"
+      - "@doctrine"
+      - "@property_accessor"
     tags:
       - { name: form.type, alias: image_upload }

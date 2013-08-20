@@ -8,7 +8,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\ValidatorInterface;
+use Undf\FormBundle\Listener\ImageUploadListener;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class ImageUploadType extends AbstractType
 {
@@ -18,38 +22,65 @@ class ImageUploadType extends AbstractType
      */
     private $uploader;
 
-    public function __construct(UploaderHelper $uploader)
+    /**
+     * @var Symfony\Component\Validator\ValidatorInterface
+     */
+    private $validator;
+
+    /**
+     * @var Doctrine\Bundle\DoctrineBundle\Registry
+     */
+    private $doctrine;
+
+    /**
+     * @var Symfony\Component\PropertyAccess\PropertyAccessor
+     */
+    private $propertyAccessor;
+
+    public function __construct(UploaderHelper $uploader, ValidatorInterface $validator, Registry $doctrine, PropertyAccessor $propertyAccessor)
     {
         $this->uploader = $uploader;
+        $this->validator = $validator;
+        $this->doctrine = $doctrine;
+        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
                 ->add($options['file_property'], 'file', array(
-                    'required' => false,
+                    'required' => $options['required'],
+                    'constraints' => new Image(array(
+                        'maxSize' => $options['max_size']
+                            )),
                     'attr' => array(
                         'style' => 'display:hidden'
                     )
                 ))
                 ->add($options['name_property'], 'text', array(
-                    'required' => false
+                    'required' => $options['required'],
+                    'attr' => array(
+                        'style' => 'display:hidden'
+                    )
                 ))
         ;
+
+        $builder->addEventSubscriber(new ImageUploadListener($this->validator, $this->doctrine->getManagerForClass($options['data_class']), $this->propertyAccessor));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'required' => false,
             'file_property' => 'image',
             'name_property' => 'imageName',
             'translation_domain' => 'messages',
+            'max_size' => '1M',
         ));
         $resolver->setRequired(array(
             'data_class',
             'default_image_url'
         ));
-
     }
 
     public function getParent()
