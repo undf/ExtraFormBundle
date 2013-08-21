@@ -82,7 +82,7 @@ class ImageUploadListener implements EventSubscriberInterface
         $violations = $this->validator->validate($form);
 
         if($data->getImageName() !== $this->oldData->getImageName()) {
-            if (empty($violations)) {
+            if (count($violations) == 0) {
 
                 foreach($form as $child) {
                     /* @var $child \Symfony\Component\Form\Form */
