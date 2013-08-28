@@ -49,6 +49,7 @@
         </span>
     {% endif %}
     {% if errors|length > 0 %}
+        <attr data-ng-init="{{ rootName ~ '.hasErrors=true' }} "></attr>
     {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
     <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
         {% if error_delay %}

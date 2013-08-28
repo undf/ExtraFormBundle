@@ -1,31 +1,33 @@
-uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) {
+uFormUtils.directive('uSubmit', ['$http', '$compile', function ($http, $compile) {
     'use strict';
     return {
         restrict: 'A',
         transclude: false,
-        controller: function($scope, $element, $attrs) {
+        controller: function ($scope, $element, $attrs) {
             var formName = $attrs.name || $attrs.ngForm,
-                    url = $attrs.uSubmit;
+                url = $attrs.uSubmit;
 
             function showSpinner() {
+                $scope.$emit('spinner.show')
                 $element.find('input[type=submit]').addClass('disabled');
             };
 
             function hideSpinner() {
+                $scope.$emit('spinner.hide')
                 $element.find('input[type=submit]').removeClass('disabled');
             }
 
-            $scope.showErrors = function() {
+            $scope.showErrors = function () {
                 $scope[formName].validated = true;
             };
 
-            $scope.save = function() {
+            $scope.save = function () {
                 showSpinner();
 
                 //Parse field name in order to get all parent names from the form tree
                 //For instance, for fieldName="myform[child1][child2][child3]" it will
                 //return ['child1', 'child2, 'child3]
-                var parseFields = function(fieldName) {
+                var parseFields = function (fieldName) {
                     var regex = /(\w+)+/gi;
                     var matches = fieldName.match(regex);
                     return matches.slice(1);
@@ -43,14 +45,14 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     headers: {'Content-Type': false},
                     //This method will allow us to change how the data is sent up to the server
                     // for which we'll need to encapsulate the model data in 'FormData'
-                    transformRequest: function(data) {
+                    transformRequest: function (data) {
                         var formData = new FormData();
-                        angular.forEach(data.model, function(fieldValue, fieldName) {
+                        angular.forEach(data.model, function (fieldValue, fieldName) {
                             //Get only those properties whose name corresponds with the name of form field.
                             if (fieldName.indexOf(formName) === 0) {
                                 //Parse field name to get all field names along the form tree
                                 var fields = parseFields(fieldName),
-                                        value;
+                                    value;
 
                                 //Find the ngModel property which holds the value which
                                 //corresponds to this fieldName
@@ -78,35 +80,44 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     //Create an object that contains the model and files which will be transformed
                     // in the above transformRequest method
                     data: {model: $scope[formName], files: $scope[formName].formFiles || []}
-                }).success(function(data, status, headers, config) {
-                    var newForm = angular.element(data);
-                    $compile(newForm)($scope, function(clonedElement, scope) {
-                        $element.replaceWith(clonedElement);
-                        scope[formName].validated = false;
+                }).success(function (data, status, headers, config) {
+
+                        hideSpinner();
+                        var newForm = angular.element(data);
+                        $compile(newForm)($scope, function (clonedElement, scope) {
+                            $element.replaceWith(clonedElement);
+                            scope[formName].validated = false;
+                        });
+
+                        if ($scope[formName].hasErrors) {
+                            $scope.$emit('submit.error', $scope[formName]);
+                        } else {
+                            $scope.$emit('submit.success', $scope[formName]);
+                        }
+
+                    }).error(function (data, status, headers, config) {
+
+                        hideSpinner();
                     });
-                    hideSpinner();
-                }).error(function(data, status, headers, config) {
-                    alert("failed!");
-                    hideSpinner();
-                });
+                $scope.$apply();
             };
         },
-        compile: function(tElement, tAttrs, transclude) {
+        compile: function (tElement, tAttrs, transclude) {
             var submitter = tElement.find('input[type=submit]');
 
             if (submitter.length > 0)
                 submitter.attr('data-ng-click', 'showErrors()');
             return {
-                pre: function(scope, formElement, attr, controller) {
+                pre: function (scope, formElement, attr, controller) {
                     var name = attr.name || attr.ngForm,
-                            submitter = tElement.find('input[type=submit]');
+                        submitter = tElement.find('input[type=submit]');
 
 
                     scope[name].validated = false;
 
                     formElement.attr('novalidate', '');
 
-                    formElement.bind('submit', function(event) {
+                    formElement.bind('submit', function (event) {
                         if (scope[name].$invalid) {
                             //Prevent the form to submit when pressing enter
                             event.preventDefault();
