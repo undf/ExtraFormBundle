@@ -104,7 +104,7 @@ class ImageUploadType extends AbstractType
     {
         //Let the parent form overwrite the default_image_url when building the view,
         //which means parent can already access the set data
-        $defaultImageUrl = $view->parent->vars['default_image_url'] ?: $options['default_image_url'];
+        $defaultImageUrl = isset($view->parent->vars['default_image_url']) ? $view->parent->vars['default_image_url'] : $options['default_image_url'];
 
         $view->vars['translation_domain'] = $options['translation_domain'];
         $view->vars['default_image_url'] = $defaultImageUrl;
