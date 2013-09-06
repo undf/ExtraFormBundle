@@ -76,10 +76,10 @@ class ImageUploadType extends AbstractType
             'name_property' => 'imageName',
             'translation_domain' => 'messages',
             'max_size' => '1M',
+            'default_image_url' => ''
         ));
         $resolver->setRequired(array(
             'data_class',
-            'default_image_url'
         ));
     }
 
@@ -102,8 +102,12 @@ class ImageUploadType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        //Let the parent form overwrite the default_image_url when building the view,
+        //which means parent can already access the set data
+        $defaultImageUrl = isset($view->parent->vars['default_image_url']) ? $view->parent->vars['default_image_url'] : $options['default_image_url'];
+
         $view->vars['translation_domain'] = $options['translation_domain'];
-        $view->vars['default_image_url'] = $options['default_image_url'];
+        $view->vars['default_image_url'] = $defaultImageUrl;
         $view->vars['file_property'] = $options['file_property'];
         $view->vars['name_property'] = $options['name_property'];
         $view->vars['label'] = false;
@@ -112,7 +116,7 @@ class ImageUploadType extends AbstractType
             $parentData = $form->getParent()->getData();
             $imageUrl = $this->uploader->asset($parentData, $options['file_property']);
         } catch (\InvalidArgumentException $e) {
-            $imageUrl = $options['default_image_url'];
+            $imageUrl = $defaultImageUrl;
         }
         $view->vars['image_url'] = $imageUrl;
     }

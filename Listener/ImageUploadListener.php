@@ -64,8 +64,11 @@ class ImageUploadListener implements EventSubscriberInterface
      * Save old form data before setting submitting data
      * @param \Symfony\Component\Form\FormEvent $event
      */
-    public function saveOldData(FormEvent $event) {
-        $this->oldData = clone $event->getData();
+    public function saveOldData(FormEvent $event)
+    {
+        if ($event->getData()) {
+            $this->oldData = clone $event->getData();
+        }
     }
 
     /**
@@ -81,10 +84,15 @@ class ImageUploadListener implements EventSubscriberInterface
         // Validate the form in group "Default"
         $violations = $this->validator->validate($form);
 
-        if($data->getImageName() !== $this->oldData->getImageName()) {
+        // If the form has no entity or the entity is new
+        if(!$this->oldData || !$this->oldData->getId()){
+            return;
+        }
+
+        if ($data->getImageName() !== $this->oldData->getImageName()) {
             if (count($violations) == 0) {
 
-                foreach($form as $child) {
+                foreach ($form as $child) {
                     /* @var $child \Symfony\Component\Form\Form */
                     $propertyPath = $child->getPropertyPath();
                     $this->propertyAccessor->setValue($this->oldData, $propertyPath, $this->propertyAccessor->getValue($data, $propertyPath));
@@ -93,7 +101,7 @@ class ImageUploadListener implements EventSubscriberInterface
                 $this->em->merge($this->oldData);
                 $this->em->flush();
             } else {
-                foreach($form as $child) {
+                foreach ($form as $child) {
                     /* @var $child \Symfony\Component\Form\Form */
                     $propertyPath = $child->getPropertyPath();
                     $this->propertyAccessor->setValue($data, $propertyPath, $this->propertyAccessor->getValue($this->oldData, $propertyPath));
