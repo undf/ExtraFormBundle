@@ -60,8 +60,8 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function ($http, $compile)
                                 for (var i = 1; i < fields.length; i++) {
                                     value = value ? value[fields[i]] : undefined;
                                 }
-                                //Value 'undefined' is serialized as a string, so get rid of them.
-                                value = (value === undefined) ? null : value;
+                                //Values 'undefined' and 'null' is serialized as a string, so get rid of them.
+                                value = (value === undefined || value === null) ? '' : value;
                                 //Need to convert our json object to a string version of json otherwise
                                 // the browser will do a 'toString()' on the object which will result
                                 // in the value '[Object object]' on the server.
@@ -83,8 +83,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function ($http, $compile)
                 }).success(function (data, status, headers, config) {
 
                         hideSpinner();
-
-                        if(angular.isElement(data)) {
+                        if(angular.isString(data)) {
                             var newForm = angular.element(data);
                             $compile(newForm)($scope, function (clonedElement, scope) {
                                 $element.replaceWith(clonedElement);
