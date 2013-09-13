@@ -7,9 +7,11 @@
                 {{ form_errors(form[file_property])}}
                 {{ form_widget(form[name_property], { 'attr': {'class' : 'hide'} })}}
                 {{ form_errors(form[name_property])}}
-                <a ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, 'FOSUserBundle') }}</a>
             </div>
-            <a ng-click="uploadFile()">{{ 'profile.picture.upload'|trans({}, 'FOSUserBundle') }}</a>
+            <div class="row">
+                <a class="btn btn-danger btn-sm pull-left" ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, 'FOSUserBundle') }}</a>
+                <a class="btn btn-primary btn-sm" ng-click="uploadFile()">{{ 'profile.picture.upload'|trans({}, 'FOSUserBundle') }}</a>
+            </div>
         </u-image-upload>
     {% endspaceless %}
 {% endblock %}
