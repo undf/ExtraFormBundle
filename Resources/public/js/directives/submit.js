@@ -92,12 +92,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                 }).success(function(data, status, headers, config) {
 
                         hideSpinner();
-<<<<<<< HEAD
                         if(angular.isString(data)) {
-=======
-
-                        if (angular.isElement(data)) {
->>>>>>> 089c6ba74fae249ff47ca481d2342fa6a10f6695
                             var newForm = angular.element(data);
                             $compile(newForm)($scope, function(clonedElement, scope) {
                                 $element.replaceWith(clonedElement);
