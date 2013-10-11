@@ -100,9 +100,9 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                             });
                         }
                         if ($scope[formName].hasErrors) {
-                            $scope.$emit('submit.error', $scope[formName], data);
+                            $scope.$emit('submit.error', $scope[formName], data, status, headers, config);
                         } else {
-                            $scope.$emit('submit.success', $scope[formName], data);
+                            $scope.$emit('submit.success', $scope[formName], data, status, headers, config);
                         }
 
                     }).error(function(data, status, headers, config) {
@@ -114,7 +114,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                                 scope[formName].validated = false;
                             });
                         }
-                        $scope.$emit('submit.error', $scope[formName], data, status);
+                        $scope.$emit('submit.error', $scope[formName], data, status, headers, config);
                     });
                 $scope.$apply();
             };
