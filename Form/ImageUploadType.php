@@ -22,50 +22,30 @@ class ImageUploadType extends AbstractType
      */
     private $uploader;
 
-    /**
-     * @var Symfony\Component\Validator\ValidatorInterface
-     */
-    private $validator;
 
-    /**
-     * @var Doctrine\Bundle\DoctrineBundle\Registry
-     */
-    private $doctrine;
-
-    /**
-     * @var Symfony\Component\PropertyAccess\PropertyAccessor
-     */
-    private $propertyAccessor;
-
-    public function __construct(UploaderHelper $uploader, ValidatorInterface $validator, Registry $doctrine, PropertyAccessor $propertyAccessor)
+    public function __construct(UploaderHelper $uploader)
     {
         $this->uploader = $uploader;
-        $this->validator = $validator;
-        $this->doctrine = $doctrine;
-        $this->propertyAccessor = $propertyAccessor;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add($options['file_property'], 'file', array(
-                    'required' => $options['required'],
-                    'constraints' => new Image(array(
-                        'maxSize' => $options['max_size']
-                            )),
-                    'attr' => array(
-                        'style' => 'display:hidden'
-                    )
-                ))
-                ->add($options['name_property'], 'text', array(
-                    'required' => $options['required'],
-                    'attr' => array(
-                        'style' => 'display:hidden'
-                    )
-                ))
-        ;
-
-        $builder->addEventSubscriber(new ImageUploadListener($this->validator, $this->doctrine->getManagerForClass($options['data_class']), $this->propertyAccessor));
+            ->add($options['file_property'], 'file', array(
+                'required' => $options['required'],
+                'constraints' => new Image(array(
+                    'maxSize' => $options['max_size']
+                )),
+                'attr' => array(
+                    'style' => 'display:hidden'
+                )
+            ))
+            ->add($options['name_property'], 'text', array(
+                'required' => $options['required'],
+                'attr' => array(
+                    'style' => 'display:hidden'
+                )
+            ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

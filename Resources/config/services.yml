@@ -8,3 +8,10 @@ services:
       - "@property_accessor"
     tags:
       - { name: form.type, alias: image_upload }
+
+  undf.form.type.image_upload_listener:
+      class: Undf\FormBundle\Listener\ImageUploadListener
+      arguments:
+        - "@validator"
+        - "@doctrine.orm.default_entity_manager"
+        - "@property_accessor"

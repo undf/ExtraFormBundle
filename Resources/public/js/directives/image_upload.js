@@ -1,14 +1,14 @@
-uFormUtils.directive('uImageUpload', function () {
+uFormUtils.directive('uImageUpload', function() {
     'use strict';
     return {
         restrict: 'E',
         transclude: false,
-        controller: function ($scope, $element, $attrs) {
+        controller: function($scope, $element, $attrs) {
             var formName = $element.closest('form').attr('name');
             $scope[formName].entity = {};
             $scope[formName].formFiles = [];
 
-            $scope.showImages = function (input, files) {
+            $scope.showImages = function(input, files) {
                 //iterate files since 'multiple' may be specified on the element
                 angular.forEach(files, function(file) {
                     var reader = new FileReader(),
@@ -17,9 +17,9 @@ uFormUtils.directive('uImageUpload', function () {
                             file: file
                         };
 
-                    reader.onload = function (e) {
-                        $scope.$apply(function () {
-                            $scope[formName].entity[$attrs.uFileName] = e.timeStamp;
+                    reader.onload = function(e) {
+                        $scope.$apply(function() {
+//                            $scope[formName].entity[$attrs.uFileName] = e.timeStamp;
                             $scope[formName].formFiles.push(formFile);
                             $scope[$attrs.uFileSrc] = e.target.result;
                         });
@@ -29,10 +29,10 @@ uFormUtils.directive('uImageUpload', function () {
 
                 });
             };
-            $scope.uploadFile = function () {
+            $scope.uploadFile = function() {
                 $element.find('[type=file]').click();
             };
-            $scope.removePic = function () {
+            $scope.removePic = function() {
                 //Clear the file input so the onchange event is still
                 //triggered when uploading same image twice in a row.
 //                var clearInput = function (source) {
@@ -45,10 +45,11 @@ uFormUtils.directive('uImageUpload', function () {
                 $scope[$attrs.uFileSrc] = $scope[$attrs.uFileDefaultSrc];
                 $scope[formName].entity[$attrs.uFileName] = '';
             };
+
         },
-        compile: function () {
+        compile: function() {
             return {
-                pre: function (scope, formElement, attr, controller) {
+                pre: function(scope, formElement, attr, controller) {
                     formElement.find('[type=file]').bind('change', function(event) {
                         scope.showImages(this, event.target.files);
                     });
