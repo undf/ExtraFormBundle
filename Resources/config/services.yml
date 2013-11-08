@@ -21,3 +21,8 @@ services:
     class: Undf\FormBundle\Form\Type\DateTimePickerType
     tags:
       - { name: form.type, alias: datetime_picker }
+
+  undf.form.type.inc_dec:
+    class: Undf\FormBundle\Form\Type\IncDecType
+    tags:
+      - { name: form.type, alias: inc_dec }
