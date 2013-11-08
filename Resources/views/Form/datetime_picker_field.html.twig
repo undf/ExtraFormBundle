@@ -1,0 +1,60 @@
+{% block datetime_picker_widget %}
+{#
+This block add some dirty hacks to the date_widget block from the MopaBootstrapBundle
+because the original block doesn´t work properly with bootstrap 3
+TODO: Check the original project and once there is a stable version for bootstrap 3
+get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html.twig'
+#}
+{% spaceless %}
+<div class="row" {{ block('widget_container_attributes') }}>
+    {% if widget_addon_prepend|default(null) is not null %}
+        {% set widget_addon = widget_addon_prepend %}
+        {{ block('widget_addon') }}
+    {% endif %}
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8"">
+        <input type="date" {{ block('datepicker_widget_attributes') }} class="form-control"/>
+    </div>
+    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <input type="time" {{ block('timepicker_widget_attributes') }} class="form-control"/>
+    </div>
+
+    {% if widget_addon_append|default(null) is not null %}
+        {% set widget_addon = widget_addon_append %}
+        {{ block('widget_addon') }}
+    {% endif %}
+</div>
+{% endspaceless %}
+{% endblock datetime_picker_widget %}
+
+{% block datepicker_widget_attributes %}
+{% set ngModel = '' %}
+{% if form.parent.parent %}
+    {% if form.parent.parent.parent %}
+        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
+    {% endif %}
+        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
+{% endif %}
+{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
+
+{% spaceless %}
+    id="{{ id }}_date" name="{{ full_name }}[date]"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+    ng-model="{{ ngModel }}.date" {% if value is not empty %}ng-init='{{ ngModel }}.date = "{{ value.date }}"'{% endif %}
+{% endspaceless %}
+{% endblock datepicker_widget_attributes %}
+
+
+{% block timepicker_widget_attributes %}
+{% set ngModel = '' %}
+{% if form.parent.parent %}
+    {% if form.parent.parent.parent %}
+        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
+    {% endif %}
+        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
+{% endif %}
+{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
+
+{% spaceless %}
+    id="{{ id }}_time" name="{{ full_name }}[time]"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+    ng-model="{{ ngModel }}.time" {% if value is not empty %}ng-init='{{ ngModel }}.time = "{{ value.time }}"'{% endif %}
+{% endspaceless %}
+{% endblock timepicker_widget_attributes %}

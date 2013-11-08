@@ -1,6 +1,6 @@
 services:
   undf.form.type.image_upload:
-    class: Undf\FormBundle\Form\ImageUploadType
+    class: Undf\FormBundle\Form\Type\ImageUploadType
     arguments:
       - "@vich_uploader.templating.helper.uploader_helper"
       - "@validator"
@@ -15,3 +15,9 @@ services:
         - "@validator"
         - "@doctrine.orm.default_entity_manager"
         - "@property_accessor"
+
+
+  undf.form.type.datetime_picker:
+    class: Undf\FormBundle\Form\Type\DateTimePickerType
+    tags:
+      - { name: form.type, alias: datetime_picker }

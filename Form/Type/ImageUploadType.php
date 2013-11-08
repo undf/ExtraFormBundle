@@ -1,6 +1,6 @@
 <?php
 
-namespace Undf\FormBundle\Form;
+namespace Undf\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
