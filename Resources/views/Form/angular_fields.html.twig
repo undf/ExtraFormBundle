@@ -207,7 +207,7 @@ get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html
 {% block form_widget_simple %}
     {% spaceless %}
         {% set type = type|default('text') %}
-        {% if type != 'hidden' and not inline and horizontal %}
+        {% if type != 'hidden' %}
             <div class="{{ horizontal_input_wrapper_class }}">
         {% endif %}
         {% if type != 'hidden' and ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}
