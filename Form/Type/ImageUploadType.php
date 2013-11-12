@@ -33,6 +33,7 @@ class ImageUploadType extends AbstractType
         $builder
             ->add($options['file_property'], 'file', array(
                 'required' => $options['required'],
+                'horizontal' => $options['horizontal'],
                 'constraints' => new Image(array(
                     'maxSize' => $options['max_size']
                 )),
@@ -42,6 +43,7 @@ class ImageUploadType extends AbstractType
             ))
             ->add($options['name_property'], 'text', array(
                 'required' => $options['required'],
+                'horizontal' => $options['horizontal'],
                 'attr' => array(
                     'style' => 'display:hidden'
                 )
@@ -52,6 +54,7 @@ class ImageUploadType extends AbstractType
     {
         $resolver->setDefaults(array(
             'required' => false,
+            'horizontal' => false,
             'file_property' => 'image',
             'name_property' => 'imageName',
             'translation_domain' => 'messages',
