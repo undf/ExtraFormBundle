@@ -49,8 +49,6 @@
     {% endif %}
     {% if errors|length > 0 %}
         <attr data-ng-init="{{ rootName ~ '.hasErrors=true' }} "></attr>
-    {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
-    <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
         {% if error_delay %}
             {% for child in form %}
                 {% if loop.index == 1 %}
@@ -58,18 +56,29 @@
                 {% endif %}
             {% endfor %}
         {% else %}
-            {# prevent deep nesting wrong context copy error #}
-            {% from 'MopaBootstrapBundle::flash.html.twig' import flash %}
-            {% for error in errors %}
-                {{
-                    flash(
-                        'error',
+            {% if form.parent == null %}
+                {% from 'MopaBootstrapBundle::flash.html.twig' import flash %}
+                {% for error in errors %}
+                    {{
+                        flash('danger', error.messagePluralization is null
+                            ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                            : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators'),
+                            true
+                        )
+                    }}
+                {% endfor %}
+            {% else %}
+                {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
+                <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
+                {% for error in errors %}
+                    {{
                         error.messagePluralization is null
                             ? error.messageTemplate|trans(error.messageParameters, 'validators')
                             : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
-                    )
-                }}
-            {% endfor %}
+                    }} <br>
+                {% endfor %}
+                </span>
+            {% endif %}
         {% endif %}
     </span>
     {% endif %}
@@ -201,3 +210,13 @@ get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html
     {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
 {% endspaceless %}
 {% endblock date_widget_attributes %}
+
+
+{% block widget_form_group_end %}
+{% spaceless %}
+{{ form_errors(form) }}
+{% if widget_form_group|default(false) or form.parent == null %}
+    </div>
+{% endif %}
+{% endspaceless %}
+{% endblock widget_form_group_end %}

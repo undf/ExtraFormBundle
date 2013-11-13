@@ -37,6 +37,7 @@ class ImageUploadType extends AbstractType
                 'constraints' => new Image(array(
                     'maxSize' => $options['max_size']
                 )),
+                'error_bubbling' => $options['error_bubbling'],
                 'attr' => array(
                     'style' => 'display:hidden'
                 )
@@ -44,6 +45,7 @@ class ImageUploadType extends AbstractType
             ->add($options['name_property'], 'text', array(
                 'required' => $options['required'],
                 'horizontal' => $options['horizontal'],
+                'error_bubbling' => $options['error_bubbling'],
                 'attr' => array(
                     'style' => 'display:hidden'
                 )
@@ -55,6 +57,7 @@ class ImageUploadType extends AbstractType
         $resolver->setDefaults(array(
             'required' => false,
             'horizontal' => false,
+            'error_bubbling' => true,
             'file_property' => 'image',
             'name_property' => 'imageName',
             'translation_domain' => 'messages',
