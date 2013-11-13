@@ -93,7 +93,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
 
                         hideSpinner();
                         if (angular.isString(data)) {
-                            var newForm = angular.element(data);
+                            var newForm = angular.element(data).find('form');
                             $compile(newForm)($scope, function(clonedElement, scope) {
                                 $element.replaceWith(clonedElement);
                                 scope[formName].validated = false;
@@ -108,7 +108,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     }).error(function(data, status, headers, config) {
                         hideSpinner();
                         if (angular.isString(data)) {
-                            var newForm = angular.element(data);
+                            var newForm = angular.element(data).find('form');
                             $compile(newForm)($scope, function(clonedElement, scope) {
                                 $element.replaceWith(clonedElement);
                                 scope[formName].validated = false;
