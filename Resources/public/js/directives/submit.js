@@ -26,10 +26,6 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                 getSubmitter().removeClass('disabled');
             }
 
-            $scope.showErrors = function() {
-                $scope[formName].validated = true;
-            };
-
             $scope.save = function() {
                 showSpinner();
 
@@ -131,9 +127,9 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     formElement.attr('novalidate', '');
 
                     formElement.bind('submit', function(event) {
-                        scope.showErrors();
-                        scope.$apply();
+                        scope[name].validated = true;
                         if (scope[name].$invalid) {
+                            scope.$emit('submit.error', scope[name]);
                             //Prevent the form to submit when pressing enter
                             event.preventDefault();
 
@@ -144,6 +140,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                             //Send ajax request
                             scope.save();
                         }
+                        scope.$apply();
 
 
                     });
