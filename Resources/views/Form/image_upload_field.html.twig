@@ -10,8 +10,8 @@
                 {#{{ form_errors(form[name_property])}}#}
             </div>
             <div class="row">
-                <a class="btn btn-danger btn-sm pull-left" ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, 'profile') }}</a>
-                <a class="btn btn-primary btn-sm" ng-click="uploadFile()" data-ng-show="image==defaultImage">{{ 'profile.picture.upload'|trans({}, 'profile') }}</a>
+                <a class="btn btn-danger btn-sm pull-left" ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, translation_domain) }}</a>
+                <a class="btn btn-primary btn-sm" ng-click="uploadFile()" data-ng-show="image==defaultImage">{{ 'profile.picture.upload'|trans({}, translation_domain) }}</a>
             </div>
         </u-image-upload>
     {% endspaceless %}
