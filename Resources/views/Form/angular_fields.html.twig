@@ -115,8 +115,8 @@
     {% endif %}
 
     {% if form.children|length == 0 %}
-        {% set isInvalid = rootName ~ '["' ~ full_name ~ '"].$invalid || ' ~ rootName ~ '["' ~ full_name ~ '[time]"].$invalid' %}
-        {% set isDirty = rootName ~ '["' ~ full_name ~ '"].$dirty || ' ~ rootName ~ '["' ~ full_name ~ '[time]"].$dirty' %}
+        {% set isInvalid = rootName ~ '["' ~ full_name ~ '"].$invalid' %}
+        {% set isDirty = rootName ~ '["' ~ full_name ~ '"].$dirty' %}
     {% else %}
         {% set isInvalid = '(' %}
         {% set isDirty = '(' %}
