@@ -5,17 +5,33 @@ because the original block doesn´t work properly with bootstrap 3
 TODO: Check the original project and once there is a stable version for bootstrap 3
 get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html.twig'
 #}
+{% set rootName = form.vars.name %}
+{% if form.parent %}
+    {% set rootName = form.parent.vars.name %}
+    {% if form.parent.parent %}
+        {% set rootName = form.parent.parent.vars.name %}
+        {% if form.parent.parent.parent %}
+            {% set rootName = form.parent.parent.parent.vars.name %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
 {% spaceless %}
 <div class="row" {{ block('widget_container_attributes') }}>
     {% if widget_addon_prepend|default(null) is not null %}
         {% set widget_addon = widget_addon_prepend %}
-        {{ block('widget_addon') }}
     {% endif %}
     <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8"">
         <input type="date" {{ block('datepicker_widget_attributes') }} class="form-control"/>
+        <span class="help-block" ng-show="{{ rootName ~ '.validated && ' ~ rootName ~ '["' ~ full_name ~ '[date]"].$invalid' }}">
+           {{ attr.invalid_message|default('form.required')|trans(attr.invalid_parameters|default({}), translation_domain) }}
+        </span>
     </div>
     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
         <input type="time" {{ block('timepicker_widget_attributes') }} class="form-control"/>
+        <span class="help-block" ng-show="{{ rootName ~ '.validated && ' ~ rootName ~ '["' ~ full_name ~ '[time]"].$invalid' }}">
+           {{ attr.invalid_message|default('form.required')|trans(attr.invalid_parameters|default({}), translation_domain) }}
+        </span>
     </div>
 
     {% if widget_addon_append|default(null) is not null %}
@@ -37,7 +53,7 @@ get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html
 {% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
 
 {% spaceless %}
-    id="{{ id }}_date" name="{{ full_name }}[date]"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+    id="{{ id }}_date" name="{{ full_name }}[date]" placeholder="{{ attr.date_placeholder }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
     ng-model="{{ ngModel }}.date" {% if value is not empty %}ng-init='{{ ngModel }}.date = "{{ value.date }}"'{% endif %}
 {% endspaceless %}
 {% endblock datepicker_widget_attributes %}
@@ -54,7 +70,7 @@ get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html
 {% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
 
 {% spaceless %}
-    id="{{ id }}_time" name="{{ full_name }}[time]"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+    id="{{ id }}_time" name="{{ full_name }}[time]" placeholder="{{ attr.time_placeholder }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
     ng-model="{{ ngModel }}.time" {% if value is not empty %}ng-init='{{ ngModel }}.time = "{{ value.time }}"'{% endif %}
 {% endspaceless %}
 {% endblock timepicker_widget_attributes %}
