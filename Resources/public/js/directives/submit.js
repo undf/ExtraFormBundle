@@ -90,7 +90,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                         hideSpinner();
                         if (angular.isString(data)) {
                             var newForm = angular.element(data).find('form');
-                            if(angular.isUndefined(newForm)){
+                            if (angular.isUndefined(newForm)) {
                                 newForm = angular.element(data);
                             }
                             $compile(newForm)($scope, function(clonedElement, scope) {
@@ -108,7 +108,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                         hideSpinner();
                         if (angular.isString(data)) {
                             var newForm = angular.element(data).find('form');
-                            if(newForm.length == 0){
+                            if (newForm.length == 0) {
                                 newForm = angular.element(data);
                             }
                             $compile(newForm)($scope, function(clonedElement, scope) {
@@ -141,6 +141,9 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
 
                         }
                         else if (!attr.action) {
+                            // The error did not have errors:
+                            scope[name].hasErrors = false;
+
                             //Prevent master request
                             event.preventDefault();
                             //Send ajax request
