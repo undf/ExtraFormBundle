@@ -1,7 +1,7 @@
 {% block image_upload_widget %}
     {% spaceless %}
         {% set attr = attr|merge({'class': attr.class|default('') ~ ' profile-pic'}) %}
-        <u-image-upload {{ block('widget_attributes') }} ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'" u-file-src="image" u-file-default-src="defaultImage" u-file-name="{{ name_property }}">
+        <u-image-upload class="{{ attr.class }}" ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'" u-file-src="image" u-file-default-src="defaultImage" u-file-name="{{ name_property }}">
             <div class="edit-img-holder">
                 <img class="img-thumbnail" ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
                 {{ form_widget(form[file_property], { 'attr': {'class' : 'hide'} })}}
