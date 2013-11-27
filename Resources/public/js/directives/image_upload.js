@@ -1,7 +1,7 @@
 uFormUtils.directive('uImageUpload', function() {
     'use strict';
     return {
-        restrict: 'E',
+        restrict: 'EA',
         transclude: false,
         controller: function($scope, $element, $attrs) {
             var formName = $element.closest('form').attr('name');

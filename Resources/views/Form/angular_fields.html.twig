@@ -1,88 +1,86 @@
-{% extends 'MopaBootstrapBundle:Form:fields.html.twig'%}
+{% extends 'MopaBootstrapBundle:Form:fields.html.twig' %}
 
 {% block widget_attributes %}
 
-{% set ngModel = '' %}
-{% if form.parent.parent %}
-    {% if form.parent.parent.parent %}
-        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
-    {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-{% endif %}
-{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
-
-{% spaceless %}
-    id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
-    ng-model="{{ ngModel }}" {% if value is not empty %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
-    {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
-{% endspaceless %}
-{% endblock widget_attributes %}
-
-{% block label_asterisk %}
-{% if required %}
-    <span>*</span>
-{% endif %}
-{% endblock label_asterisk %}
-
-{% block form_errors %}
-{% set ngModel = '' %}
-{% set rootName = form.vars.name %}
-{% if form.parent %}
-    {% set rootName = form.parent.vars.name %}
-    {% set ngModel = ngModel ~ form.vars.name ~ '.' %}
+    {% set ngModel = '' %}
     {% if form.parent.parent %}
-        {% set rootName = form.parent.parent.vars.name %}
         {% if form.parent.parent.parent %}
-            {% set rootName = form.parent.parent.parent.vars.name %}
             {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
         {% endif %}
         {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
     {% endif %}
-{% endif %}
-{% set ngModel = ngModel ~ form.vars.name ~ '.' ~ name %}
+    {% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
 
-{% spaceless %}
-    {% if form.children|length == 0 %}
-        <span class="help-block" ng-show="{{ rootName ~ '.validated && ' ~ rootName ~ '["' ~ full_name ~ '"].$invalid' }}">
+    {% spaceless %}
+        id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+        ng-model="{{ ngModel }}" {% if value is not empty %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+        {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
+    {% endspaceless %}
+{% endblock widget_attributes %}
+
+{% block label_asterisk %}
+    {% if required %}
+        <span>*</span>
+    {% endif %}
+{% endblock label_asterisk %}
+
+{% block form_errors %}
+    {% set ngModel = '' %}
+    {% set rootName = form.vars.name %}
+    {% if form.parent %}
+        {% set rootName = form.parent.vars.name %}
+        {% set ngModel = ngModel ~ form.vars.name ~ '.' %}
+        {% if form.parent.parent %}
+            {% set rootName = form.parent.parent.vars.name %}
+            {% if form.parent.parent.parent %}
+                {% set rootName = form.parent.parent.parent.vars.name %}
+                {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
+            {% endif %}
+            {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
+        {% endif %}
+    {% endif %}
+    {% set ngModel = ngModel ~ form.vars.name ~ '.' ~ name %}
+
+    {% spaceless %}
+        {% if form.children|length == 0 %}
+            <span class="help-block"
+                  ng-show="{{ rootName ~ '.validated && ' ~ rootName ~ '["' ~ full_name ~ '"].$invalid' }}">
            {{ attr.invalid_message|default('form.required')|trans(attr.invalid_parameters|default({}), translation_domain) }}
         </span>
-    {% endif %}
-    {% if errors|length > 0 %}
-        <attr data-ng-init="{{ rootName ~ '.hasErrors=true' }} "></attr>
-        {% if error_delay %}
-            {% for child in form %}
-                {% if loop.index == 1 %}
-                    {% if child.set('errors', errors) %}{% endif %}
-                {% endif %}
-            {% endfor %}
-        {% else %}
-            {% if form.parent == null %}
-                {% from 'MopaBootstrapBundle::flash.html.twig' import flash %}
-                {% for error in errors %}
-                    {{
-                        flash('danger', error.messagePluralization is null
-                            ? error.messageTemplate|trans(error.messageParameters, 'validators')
-                            : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators'),
-                            true
-                        )
-                    }}
+        {% endif %}
+        {% if errors|length > 0 %}
+            <attr data-ng-init="{{ rootName ~ '.hasErrors=true' }} "></attr>
+            {% if error_delay %}
+                {% for child in form %}
+                    {% if loop.index == 1 %}
+                        {% if child.set('errors', errors) %}{% endif %}
+                    {% endif %}
                 {% endfor %}
             {% else %}
-                {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
-                <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
+                {% if form.parent == null %}
+                    {% from 'MopaBootstrapBundle::flash.html.twig' import flash %}
+                    {% for error in errors %}
+                        {{ flash('danger', error.messagePluralization is null
+                        ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                        : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators'),
+                        true
+                        ) }}
+                    {% endfor %}
+                {% else %}
+                    {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
+                    <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
                 {% for error in errors %}
-                    {{
-                        error.messagePluralization is null
-                            ? error.messageTemplate|trans(error.messageParameters, 'validators')
-                            : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators')
-                    }} <br>
+                    {{ error.messagePluralization is null
+                    ? error.messageTemplate|trans(error.messageParameters, 'validators')
+                    : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators') }}
+                    <br>
                 {% endfor %}
                 </span>
+                {% endif %}
             {% endif %}
+            </span>
         {% endif %}
-    </span>
-    {% endif %}
-{% endspaceless %}
+    {% endspaceless %}
 {% endblock form_errors %}
 
 {% block widget_form_group_start %}
@@ -134,13 +132,13 @@
 
     {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ng-class: {"has-error":' ~ isInvalid ~ ' && (' ~ isDirty ~ ' || ' ~ rootName ~ '.validated)}'}) %}
     {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
-      {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ' ~ attr.class}) %}
+        {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ' ~ attr.class}) %}
     {% endif %}
-    <div {% for attrname,attrvalue in widget_form_group_attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>
+    <div {% for attrname,attrvalue in widget_form_group_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
     {# a form item containing the field in block_prefixes is a near subform or a field directly #}
     {% if (form|length > 0 and form.parent != null)
-        and 'field' not in form.vars.block_prefixes %}
-        {% if show_child_legend%}
+    and 'field' not in form.vars.block_prefixes %}
+        {% if show_child_legend %}
             {{ block('form_legend') }}
         {% elseif label_render %}
             {{ form_label(form, label|default(null)) }}
@@ -161,81 +159,97 @@
 {% endif %}
 
 {% if horizontal %}
-    <div class="{{ horizontal_input_wrapper_class }}">
-{% endif %}
-{% endspaceless %}
-{% endblock widget_form_group_start %}
-
-{% block password_widget %}
-{% spaceless %}
-    {% set type = type|default('password') %}
-    {{ block('form_widget_simple') }}
-{% endspaceless %}
-{% endblock password_widget %}
-
-{% block date_widget %}
-{#
-This block add some dirty hacks to the date_widget block from the MopaBootstrapBundle
-because the original block doesn´t work properly with bootstrap 3
-TODO: Check the original project and once there is a stable version for bootstrap 3
-get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html.twig'
-#}
-{% spaceless %}
-{% if widget == 'single_text' %}
-    {% if datepicker is defined %}
-        <div class="input-{{ widget_addon.type }} date dropdown dropup" style="position:relative" {{ block('widget_container_attributes') }} data-date="{{ value }}" data-date-format="{{ format|lower }}" data-form="datepicker">
-            {% if widget_addon.type == 'prepend' %}
-                {{ block('widget_addon') }}
-            {% endif %}
-            {% set attr = attr|merge({'class': attr.class|default('') ~ ' not-removable grd-white'}) %}
-            <input type="text" {{ block('widget_attributes') }} value="{{ value }}" data-form="datepicker" data-date-format="{{ format|lower }}"/>
-            <button class="btn dropdown-toggle" ng-click="opened=!opened"><i class="icon-calendar"></i></button>
-            <div class="dropdown-menu" {% if value is not empty %}ng-init="date = '{{ value }}'"{% endif %}>
-                <input type="text" u-datepicker show-weeks="false" {{ block('date_widget_attributes') }} value="{{ value }}" data-form="datepicker" data-date-format="{{ format|lower }}"/>
-            </div>
-            {% if widget_addon.type == 'append' %}
-                {{ block('widget_addon') }}
-            {% endif %}
-        </div>
-    {% else %}
-        {{ block('form_widget_simple') }}
+<div class="{{ horizontal_input_wrapper_class }}">
     {% endif %}
-{% else %}
-        {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
-            {{ date_pattern|replace({
-                '{{ year }}':  form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ ' input-small'}}),
+    {% endspaceless %}
+    {% endblock widget_form_group_start %}
+
+    {% block password_widget %}
+        {% spaceless %}
+            {% set type = type|default('password') %}
+            {{ block('form_widget_simple') }}
+        {% endspaceless %}
+    {% endblock password_widget %}
+
+    {% block date_widget %}
+        {#
+        This block add some dirty hacks to the date_widget block from the MopaBootstrapBundle
+        because the original block doesn´t work properly with bootstrap 3
+        TODO: Check the original project and once there is a stable version for bootstrap 3
+        get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html.twig'
+        #}
+        {% spaceless %}
+            {% if widget == 'single_text' %}
+                {% if datepicker is defined %}
+                    <div class="input-{{ widget_addon.type }} date dropdown dropup"
+                         style="position:relative" {{ block('widget_container_attributes') }} data-date="{{ value }}"
+                         data-date-format="{{ format|lower }}" data-form="datepicker">
+                        {% if widget_addon.type == 'prepend' %}
+                            {{ block('widget_addon') }}
+                        {% endif %}
+                        {% set attr = attr|merge({'class': attr.class|default('') ~ ' not-removable grd-white'}) %}
+                        <input type="text" {{ block('widget_attributes') }} value="{{ value }}" data-form="datepicker"
+                               data-date-format="{{ format|lower }}"/>
+                        <button class="btn dropdown-toggle" ng-click="opened=!opened"><i class="icon-calendar"></i>
+                        </button>
+                        <div class="dropdown-menu" {% if value is not empty %}ng-init="date = '{{ value }}'"{% endif %}>
+                            <input type="text" u-datepicker show-weeks="false" {{ block('date_widget_attributes') }}
+                                   value="{{ value }}" data-form="datepicker" data-date-format="{{ format|lower }}"/>
+                        </div>
+                        {% if widget_addon.type == 'append' %}
+                            {{ block('widget_addon') }}
+                        {% endif %}
+                    </div>
+                {% else %}
+                    {{ block('form_widget_simple') }}
+                {% endif %}
+            {% else %}
+                {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
+                {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ ' input-small' }}),
                 '{{ month }}': form_widget(form.month, {'attr': {'class': attr.widget_class|default('') ~ ' input-mini'}}),
                 '{{ day }}':   form_widget(form.day, {'attr': {'class': attr.widget_class|default('') ~ ' input-mini'}}),
-            })|raw }}
-        {{ block('help') }}
-{% endif %}
-{% endspaceless %}
-{% endblock date_widget %}
+                })|raw }}
+                {{ block('help') }}
+            {% endif %}
+        {% endspaceless %}
+    {% endblock date_widget %}
 
-{% block date_widget_attributes %}
+    {% block date_widget_attributes %}
 
-{% set ngModel = '' %}
-{% if form.parent.parent %}
-    {% if form.parent.parent.parent %}
-        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
+        {% set ngModel = '' %}
+        {% if form.parent.parent %}
+            {% if form.parent.parent.parent %}
+                {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
+            {% endif %}
+            {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
+        {% endif %}
+        {% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
+
+        {% spaceless %}
+            id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
+            ng-model="date" data-formatted-date="{{ ngModel }}"
+            {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
+        {% endspaceless %}
+    {% endblock date_widget_attributes %}
+
+    {% block widget_form_group_end %}
+    {% spaceless %}
+    {{ form_errors(form) }}
+    {% if widget_form_group|default(false) or form.parent == null %}
+</div>
     {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-{% endif %}
-{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
-
-{% spaceless %}
-    id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
-    ng-model="date" data-formatted-date="{{ ngModel }}"
-    {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
-{% endspaceless %}
-{% endblock date_widget_attributes %}
-
-
-{% block widget_form_group_end %}
-{% spaceless %}
-{{ form_errors(form) }}
-{% if widget_form_group|default(false) or form.parent == null %}
-    </div>
-{% endif %}
 {% endspaceless %}
 {% endblock widget_form_group_end %}
+
+{#
+    Overwrites widget addon in order to import the macro "icon" in UndfFormBundle
+    which uses icons in the fontawesome4 style
+#}
+{% block widget_addon %}
+    {% spaceless %}
+        {% from 'UndfFormBundle::icons.html.twig' import icon %}
+        {% set widget_addon_icon = widget_addon.icon is defined ? widget_addon.icon : null %}
+        <span class="input-group-addon">{{ (widget_addon.text|default(false) ? widget_addon.text|trans({}, translation_domain) : icon(widget_addon_icon))|raw }}</span>
+    {% endspaceless %}
+{% endblock widget_addon %}
