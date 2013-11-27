@@ -1,22 +1,50 @@
 {% extends 'MopaBootstrapBundle:Form:fields.html.twig'%}
 
 {% block widget_attributes %}
-
-{% set ngModel = '' %}
-{% if form.parent.parent %}
-    {% if form.parent.parent.parent %}
-        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
-    {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-{% endif %}
-{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
 
 {% spaceless %}
     id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
-    ng-model="{{ ngModel }}" {% if value is not empty %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+    {% if 'radio' not in form.vars.block_prefixes %}
+    ng-model="{{ ngModel }}" {% if value is not empty and value is not iterable %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+    {% endif %}
     {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
 {% endspaceless %}
 {% endblock widget_attributes %}
+
+{% block choice_widget_expanded %}
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
+
+{% spaceless %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default(''))}) %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class ~ ' ' ~ (widget_type != '' ? (multiple ? 'checkbox' : 'radio') ~ '-' ~ widget_type : ''))}) %}
+    {% if expanded %}
+        {% set attr = attr|merge({'class': attr.class|default(horizontal_input_wrapper_class)}) %}
+        <div {{ block('widget_attributes') }}>
+    {% endif %}
+    {% set widgetAttr = {'class': attr.widget_class|default('')}%}
+    {% for child in form %}
+        {% if widget_type != 'inline' %}
+        <div class="{{ multiple ? 'checkbox' : 'radio' }}">
+            {% if not multiple %}
+                {% set widgetAttr = widgetAttr|merge({'data-ng-click': attribute(attr, 'ng-model' ) ~ '=' ~ child.vars.value})%}
+            {% endif %}
+        {% endif %}
+            <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                {{ form_widget(child, {'horizontal_label_class': horizontal_label_class, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class, 'attr': widgetAttr }) }}
+                {{ child.vars.label|trans({}, translation_domain) }}
+            </label>
+        {% if widget_type != 'inline' %}
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% if expanded %}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock choice_widget_expanded %}
 
 {% block label_asterisk %}
 {% if required %}
@@ -25,21 +53,9 @@
 {% endblock label_asterisk %}
 
 {% block form_errors %}
-{% set ngModel = '' %}
-{% set rootName = form.vars.name %}
-{% if form.parent %}
-    {% set rootName = form.parent.vars.name %}
-    {% set ngModel = ngModel ~ form.vars.name ~ '.' %}
-    {% if form.parent.parent %}
-        {% set rootName = form.parent.parent.vars.name %}
-        {% if form.parent.parent.parent %}
-            {% set rootName = form.parent.parent.parent.vars.name %}
-            {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
-        {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-    {% endif %}
-{% endif %}
-{% set ngModel = ngModel ~ form.vars.name ~ '.' ~ name %}
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
+    {% set rootName = ngMacros.root_name(form) %}
 
 {% spaceless %}
     {% if form.children|length == 0 %}
@@ -86,22 +102,9 @@
 {% endblock form_errors %}
 
 {% block widget_form_group_start %}
-
-{% set ngModel = '' %}
-{% set rootName = form.vars.name %}
-{% if form.parent %}
-    {% set rootName = form.parent.vars.name %}
-    {% set ngModel = ngModel ~ form.vars.name ~ '.' %}
-    {% if form.parent.parent %}
-        {% set rootName = form.parent.parent.vars.name %}
-        {% if form.parent.parent.parent %}
-            {% set rootName = form.parent.parent.parent.vars.name %}
-            {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
-        {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-    {% endif %}
-{% endif %}
-{% set ngModel = ngModel ~ form.vars.name ~ '.' ~ name %}
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
+    {% set rootName = ngMacros.root_name(form) %}
 
 {% spaceless %}
 {% if widget_form_group|default(false) or form.parent == null %}
@@ -194,15 +197,8 @@ get rid of this block and use the one from 'MopaBootstrapBundle:Form:fields.html
 {% endblock date_widget %}
 
 {% block date_widget_attributes %}
-
-{% set ngModel = '' %}
-{% if form.parent.parent %}
-    {% if form.parent.parent.parent %}
-        {% set ngModel = ngModel ~ form.parent.parent.parent.vars.name ~ '.' %}
-    {% endif %}
-        {% set ngModel = ngModel ~ form.parent.parent.vars.name ~ '.' %}
-{% endif %}
-{% set ngModel = ngModel ~ form.parent.vars.name ~ '.' ~ name %}
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
 
 {% spaceless %}
     id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
