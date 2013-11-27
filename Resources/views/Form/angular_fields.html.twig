@@ -116,7 +116,26 @@
     {% if errors|length > 0 %}
         {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' has-error'}) %}
     {% endif %}
-    {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ng-class: {"has-error":' ~ rootName ~ '["' ~ full_name ~ '"].$invalid && (' ~ rootName ~ '["' ~ full_name ~ '"].$dirty || ' ~ rootName ~ '.validated)}'}) %}
+
+    {% if form.children|length == 0 %}
+        {% set isInvalid = rootName ~ '["' ~ full_name ~ '"].$invalid' %}
+        {% set isDirty = rootName ~ '["' ~ full_name ~ '"].$dirty' %}
+    {% else %}
+        {% set isInvalid = '(' %}
+        {% set isDirty = '(' %}
+        {% for child in form.children %}
+            {% set isInvalid = isInvalid ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$invalid' %}
+            {% set isDirty = isDirty ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$dirty' %}
+            {% if loop.index < (form.children|length) %}
+                {% set isInvalid = isInvalid ~ ' || ' %}
+                {% set isDirty = isDirty ~ ' || ' %}
+            {% endif %}
+        {% endfor %}
+        {% set isInvalid = isInvalid ~ ')' %}
+        {% set isDirty = isDirty ~ ')' %}
+    {% endif %}
+
+    {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ng-class: {"has-error":' ~ isInvalid ~ ' && (' ~ isDirty ~ ' || ' ~ rootName ~ '.validated)}'}) %}
     {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
       {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ' ~ attr.class}) %}
     {% endif %}

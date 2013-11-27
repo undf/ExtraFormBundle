@@ -1,17 +1,15 @@
 {% block image_upload_widget %}
     {% spaceless %}
         {% set attr = attr|merge({'class': attr.class|default('') ~ ' profile-pic'}) %}
-        <u-image-upload {{ block('widget_attributes') }} ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'" u-file-src="image" u-file-default-src="defaultImage" u-file-name="{{ name_property }}">
-            <div class="edit-img-holder">
-                <img class="img-thumbnail" ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
+        <u-image-upload class="{{ attr.class }}" ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'" u-file-src="image" u-file-default-src="defaultImage" u-file-name="{{ name_property }}">
+                <img class="masked" data-ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
                 {{ form_widget(form[file_property], { 'attr': {'class' : 'hide'} })}}
                 {#{{ form_errors(form[file_property])}}#}
                 {{ form_widget(form[name_property], { 'attr': {'class' : 'hide'} })}}
                 {#{{ form_errors(form[name_property])}}#}
-            </div>
             <div class="row">
-                <a class="btn btn-danger btn-sm pull-left" ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, 'profile') }}</a>
-                <a class="btn btn-primary btn-sm" ng-click="uploadFile()" data-ng-show="image==defaultImage">{{ 'profile.picture.upload'|trans({}, 'profile') }}</a>
+                <a class="btn btn-danger btn-sm pull-left" ng-click="removePic()" data-ng-show="image!=defaultImage">{{ 'profile.picture.remove'|trans({}, translation_domain) }}</a>
+                <a class="btn btn-primary btn-sm" ng-click="uploadFile()" data-ng-show="image==defaultImage">{{ 'profile.picture.upload'|trans({}, translation_domain) }}</a>
             </div>
         </u-image-upload>
     {% endspaceless %}
