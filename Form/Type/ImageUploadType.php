@@ -35,8 +35,8 @@ class ImageUploadType extends AbstractType
                 'required' => $options['required'],
                 'horizontal' => $options['horizontal'],
                 'constraints' => new Image(array(
-                    'maxSize' => $options['max_size']
-                )),
+                        'maxSize' => $options['max_size']
+                    )),
                 'error_bubbling' => $options['error_bubbling'],
                 'attr' => array(
                     'style' => 'display:hidden'
