@@ -1,7 +1,7 @@
 {% macro ng_model(form, name) %}
-    {% set ngModel = form.vars.name ~ name|default('') %}
+    {% set ngModel = name|default(form.vars.name) %}
     {% if form.parent %}
-        {{ _self.ng_model(form.parent, '.' ~ ngModel) }}
+        {{ _self.ng_model(form.parent, form.parent.vars.name ~ '.' ~ ngModel) }}
     {% else %}
         {{ ngModel }}
     {% endif %}
