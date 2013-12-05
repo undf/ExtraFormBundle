@@ -61,7 +61,7 @@
         {% if form.children|length == 0 %}
             <span class="help-block"
                   ng-show="{{ rootName ~ '.validated && ' ~ rootName ~ '["' ~ full_name ~ '"].$invalid' }}">
-           {{ attr.invalid_message|default('form.required')|trans(attr.invalid_parameters|default({}), translation_domain)|raw }}
+           {{ attr.invalid_message|default('form.required')|trans(attr.invalid_parameters|default({}), 'validators')|raw }}
         </span>
         {% endif %}
         {% if errors|length > 0 %}
