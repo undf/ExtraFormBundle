@@ -47,7 +47,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     // manually will not set this boundary parameter. For whatever reason,
                     // setting the Content-type to 'false' will force the request to automatically
                     // populate the headers properly including the boundary parameter.
-                    headers: {'Content-Type': false},
+                    headers: {'Content-Type': undefined},
                     //This method will allow us to change how the data is sent up to the server
                     // for which we'll need to encapsulate the model data in 'FormData'
                     transformRequest: function(data) {
