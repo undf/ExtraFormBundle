@@ -1,17 +1,21 @@
 {% macro ng_model(form, name) %}
-    {% set ngModel = name|default(form.vars.name) %}
-    {% if form.parent %}
-        {{ _self.ng_model(form.parent, form.parent.vars.name ~ '.' ~ ngModel) }}
-    {% else %}
-        {{ ngModel }}
-    {% endif %}
+    {% spaceless %}
+        {% set ngModel = name|default(form.vars.name) %}
+        {% if form.parent %}
+            {{ _self.ng_model(form.parent, form.parent.vars.name ~ '.' ~ ngModel) }}
+        {% else %}
+            {{ ngModel }}
+        {% endif %}
+    {% endspaceless %}
 {% endmacro %}
 
 {% macro root_name(form) %}
-    {% set name = form.vars.name %}
-    {% if form.parent %}
-        {{ _self.root_name(form.parent) }}
-    {% else %}
-        {{ name }}
-    {% endif %}
+    {% spaceless %}
+        {% set name = form.vars.name %}
+        {% if form.parent %}
+            {{ _self.root_name(form.parent) }}
+        {% else %}
+            {{ name }}
+        {% endif %}
+    {% endspaceless %}
 {% endmacro %}
