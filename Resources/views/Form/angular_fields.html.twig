@@ -85,12 +85,11 @@
                 {% else %}
                     {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
                     <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
-                {% for error in errors %}
+                    {% set error = errors|first %}
                     {{ error.messagePluralization is null
                     ? error.messageTemplate|trans(error.messageParameters, 'validators')
                     : error.messageTemplate|transchoice(error.messagePluralization, error.messageParameters, 'validators') }}
                     <br>
-                {% endfor %}
                 </span>
                 {% endif %}
             {% endif %}
