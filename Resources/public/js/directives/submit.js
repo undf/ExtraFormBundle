@@ -4,8 +4,10 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
         restrict: 'A',
         transclude: false,
         controller: function($scope, $element, $attrs) {
+            
             var formName = $attrs.name || $attrs.ngForm,
-                url = $attrs.uSubmit;
+                url = $attrs.uSubmit,
+                replace = $attrs.replace != "false";
 
             function getSubmitter() {
                 var submitter = $element.find('input[type=submit]');
@@ -19,10 +21,10 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
             function showSpinner() {
                 $scope.$emit('spinner.show');
                 getSubmitter().addClass('disabled');
-            };
+            }
 
             function hideSpinner() {
-                $scope.$emit('spinner.hide')
+                $scope.$emit('spinner.hide');
                 getSubmitter().removeClass('disabled');
             }
 
@@ -38,6 +40,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                     return matches.slice(1);
                 };
                 $http({
+
                     method: 'POST',
                     url: url,
                     //IMPORTANT!!! You might think this should be set to 'multipart/form-data'
@@ -94,7 +97,9 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                                 newForm = angular.element(data);
                             }
                             $compile(newForm)($scope, function(clonedElement, scope) {
-                                $element.replaceWith(clonedElement);
+                                if(replace) {
+                                    $element.replaceWith(clonedElement);
+                                }
                                 scope[formName].validated = false;
                             });
                         }

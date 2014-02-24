@@ -36,7 +36,7 @@
             {{ form_widget(form[file_property], { 'attr': {'class' : 'hide'} }) }}
             {{ form_widget(form[name_property], { 'attr': {'class' : 'hide'} }) }}
 
-            <a class="btn btn-danger"
+            <a class="btn btn-ml-danger"
                data-ng-click="removePic()"
                data-ng-show="image!=defaultImage">
                 {{ 'picture.remove'|trans({}, translation_domain) }}
