@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
+  <file date="2014-02-05T17:46:31Z" source-language="en" target-language="es" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
+    <body>
+      <trans-unit id="f1001c7d7a2639487b3d0f3024f3bbc34c125444" resname="form.invalid">
+        <source>form.invalid</source>
+        <target>Campo inválido</target>
+        <jms:reference-file line="2">Resources/views/dummy_translations.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="67a958bf50614b01d8dacab2371fc3ccee0d7a29" resname="form.required">
+        <source>form.required</source>
+        <target>Campo obligatorio</target>
+        <jms:reference-file line="1">Resources/views/dummy_translations.html.twig</jms:reference-file>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
