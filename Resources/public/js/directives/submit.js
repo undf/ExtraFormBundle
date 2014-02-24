@@ -6,7 +6,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
         controller: function($scope, $element, $attrs) {
             var formName = $attrs.name || $attrs.ngForm,
                 url = $attrs.uSubmit,
-                replace = $attrs.replace != "false"
+                replace = $attrs.replace != "false";
 
             function getSubmitter() {
                 var submitter = $element.find('input[type=submit]');
@@ -40,7 +40,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                 };
                 $http({
 
-                    method: $attrs.method || 'POST',
+                    method: 'POST',
                     url: url,
                     //IMPORTANT!!! You might think this should be set to 'multipart/form-data'
                     // but this is not true because when we are sending up files the request
