@@ -250,3 +250,23 @@
         <span class="input-group-addon">{{ (widget_addon.text|default(false) ? widget_addon.text|trans({}, translation_domain) : icon(widget_addon_icon))|raw }}</span>
     {% endspaceless %}
 {% endblock widget_addon %}
+
+{% block checkbox_widget %}
+{% spaceless %}
+    {% if label is not sameas(false) and label is empty %}
+        {% set label = name|humanize %}
+    {% endif %}
+
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
+    {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes and label_render %}
+        <label class="checkbox inline control-label" for="{{ id }}">
+    {% endif %}
+                <span><i class="ml-icon-1"></i></span>
+    {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes %}
+        {% if label_render and widget_checkbox_label in ['both', 'widget'] %}
+            {{ label|trans({}, translation_domain) | raw }}
+        </label>
+        {% endif %}
+    {% endif %}
+{% endspaceless %}
+{% endblock checkbox_widget %}
