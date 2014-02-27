@@ -7,7 +7,12 @@
 {% spaceless %}
     id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
     {% if 'radio' not in form.vars.block_prefixes %}
-    ng-model="{{ ngModel }}" {% if value is not empty and value is not iterable %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+        ng-model="{{ ngModel }}"
+        {% if type|default('text') == 'number' %}
+            ng-init='{{ ngModel }} = {{ value }}'
+        {% else %}
+            {% if value is not empty and value is not iterable %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+        {% endif %}
     {% endif %}
     {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
 {% endspaceless %}
@@ -256,7 +261,7 @@
         {% set label = name|humanize %}
     {% endif %}
 
-    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
+    <input type="checkbox" {{ block('widget_attributes') }}{% if checked %} checked="checked"{% endif %}/>
     {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes and label_render %}
         <label class="checkbox inline control-label" for="{{ id }}">
     {% endif %}
