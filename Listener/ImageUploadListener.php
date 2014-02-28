@@ -99,8 +99,10 @@ class ImageUploadListener implements EventSubscriberInterface
                     $this->propertyAccessor->setValue($this->oldData, $propertyPath, $this->propertyAccessor->getValue($data, $propertyPath));
                 }
 
-                $this->em->merge($this->oldData);
-                $this->em->flush();
+                if(count($this->validator->validate($form))) {
+                    $this->em->merge($this->oldData);
+                    $this->em->flush();
+                }
             } else {
                 foreach ($form['entity'] as $child) {
                     /* @var $child \Symfony\Component\Form\Form */
