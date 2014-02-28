@@ -90,7 +90,7 @@ class ImageUploadListener implements EventSubscriberInterface
             return;
         }
 
-        if ($data->getImageName() !== $this->oldData->getImageName()) {
+        if ($data->getImage() && ($data->getImageName() !== $this->oldData->getImageName())) {
             if (count($violations) == 0) {
 
                 foreach ($form['entity'] as $child) {

@@ -6,7 +6,7 @@
 
 {% spaceless %}
     id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
-    {% if 'radio' not in form.vars.block_prefixes %}
+    {% if ('radio' not in form.vars.block_prefixes) and ('checkbox' not in form.vars.block_prefixes) %}
         ng-model="{{ ngModel }}"
         {% if type|default('text') == 'number' %}
             ng-init='{{ ngModel }} = {{ value }}'
@@ -256,12 +256,14 @@
 {% endblock widget_addon %}
 
 {% block checkbox_widget %}
+{% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+{% set ngModel = ngMacros.ng_model(form, name) %}
 {% spaceless %}
     {% if label is not sameas(false) and label is empty %}
         {% set label = name|humanize %}
     {% endif %}
 
-    <input type="checkbox" {{ block('widget_attributes') }}{% if checked %} checked="checked"{% endif %}/>
+    <input data-ng-false-value data-ng-model="{{ ngModel }}" data-ng-init="{{ ngModel }}={{ data?'true':'false' }}" type="checkbox" {{ block('widget_attributes') }}{% if checked %} checked="checked"{% endif %}/>
     {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes and label_render %}
         <label class="checkbox inline control-label" for="{{ id }}">
     {% endif %}

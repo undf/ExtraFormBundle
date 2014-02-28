@@ -19,7 +19,7 @@ uFormUtils.directive('uImageUpload', function() {
 
                     reader.onload = function(e) {
                         $scope.$apply(function() {
-//                            $scope[formName].entity[$attrs.uFileName] = e.timeStamp;
+                            $scope[formName].entity[$attrs.uFileName] = e.timeStamp;
                             $scope[formName].formFiles.push(formFile);
                             $scope[$attrs.uFileSrc] = e.target.result;
                         });
