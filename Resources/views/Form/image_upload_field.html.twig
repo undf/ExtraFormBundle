@@ -33,8 +33,8 @@
 
             <img class="masked" data-ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
 
-            {{ form_widget(form[file_property], { 'attr': {'class' : 'hide'} }) }}
-            {{ form_widget(form[name_property], { 'attr': {'class' : 'hide'} }) }}
+            {{ form_widget(form[file_property], { 'attr': {'style' : 'visibility:hidden;'} }) }}
+            {{ form_widget(form[name_property], { 'attr': {'style' : 'visibility:hidden;'} }) }}
 
             <a class="btn btn-ml-danger"
                data-ng-click="removePic()"
