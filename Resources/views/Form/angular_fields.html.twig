@@ -11,7 +11,7 @@
         {% if type|default('text') == 'number' %}
             ng-init='{{ ngModel }} = {{ value }}'
         {% else %}
-            {% if value is not empty and value is not iterable %}ng-init='{{ ngModel }} = "{{ value }}"'{% endif %}
+            {% if value is not empty and value is not iterable %}ng-init="{{ ngModel }} = '{{ value|replace({"\'": "\\'"}) }}'"{% endif %}
         {% endif %}
     {% endif %}
     {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}" {% else %}{{ attrname }}="{{ attrvalue }}" {% endif %}{% endfor %}
