@@ -263,7 +263,7 @@
         {% set label = name|humanize %}
     {% endif %}
 
-    <input data-ng-false-value data-ng-model="{{ ngModel }}" data-ng-init="{{ ngModel }}={{ data?'true':'false' }}" type="checkbox" {{ block('widget_attributes') }}{% if checked %} checked="checked"{% endif %}/>
+    <input data-ng-false-value data-ng-model="{{ ngModel }}" type="checkbox"{{ block('widget_attributes') }}{% if checked %} data-ng-init="{{ ngModel }}=true" checked="checked"{% endif %}/>
     {% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes and label_render %}
         <label class="checkbox inline control-label" for="{{ id }}">
     {% endif %}
