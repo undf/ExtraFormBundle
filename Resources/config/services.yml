@@ -26,3 +26,12 @@ services:
     class: Undf\FormBundle\Form\Type\IncDecType
     tags:
       - { name: form.type, alias: inc_dec }
+
+
+  undf.form.type.multiple_choice:
+    class: Undf\FormBundle\Form\Type\MultipleChoiceType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@serializer"
+    tags:
+      - { name: form.type, alias: multiple_choice }

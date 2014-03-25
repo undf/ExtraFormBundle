@@ -70,6 +70,15 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                                 }
                                 //Values 'undefined' and 'null' is serialized as a string, so get rid of them.
                                 value = (value === undefined || value === null) ? '' : value;
+                                // Multiple Choice transformation
+                                if (angular.isArray(value)) {
+                                    fieldName = fieldName + '[]';
+                                    angular.forEach(value, function (v, k) {
+                                        formData.append(fieldName, v.id);
+                                    })
+
+                                    return;
+                                }
                                 //Need to convert our json object to a string version of json otherwise
                                 // the browser will do a 'toString()' on the object which will result
                                 // in the value '[Object object]' on the server.
