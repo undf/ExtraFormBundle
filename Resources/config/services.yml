@@ -31,7 +31,7 @@ services:
   undf.form.type.multiple_choice:
     class: Undf\FormBundle\Form\Type\MultipleChoiceType
     arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@serializer"
+      - "@doctrine"
+      - "@property_accessor"
     tags:
       - { name: form.type, alias: multiple_choice }

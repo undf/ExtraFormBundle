@@ -72,7 +72,6 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                                 value = (value === undefined || value === null) ? '' : value;
                                 // Multiple Choice transformation
                                 if (angular.isArray(value)) {
-                                    fieldName = fieldName + '[]';
                                     angular.forEach(value, function (v, k) {
                                         formData.append(fieldName, v.id);
                                     })

@@ -45,7 +45,7 @@ class CollectionToJsonTransformer implements DataTransformerInterface
      */
     public function transform($collection)
     {
-        if (null === $collection) {
+        if (null === $collection || empty($collection)) {
             return array();
         }
 
