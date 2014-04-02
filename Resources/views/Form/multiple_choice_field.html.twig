@@ -1,0 +1,22 @@
+{% block multiple_choice_widget %}
+
+    {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
+    {% set ngModel = ngMacros.ng_model(form, name) %}
+    {% spaceless %}
+        <button type="button"
+                data-multiple-choice
+                data-choices="choices"
+                data-selected-choices="selectedChoices"
+                data-modal-header="{{ 'form.modal.title.multiple_choice' | trans({}, translation_domain) }}"
+                data-api-url="{{ form.vars.api_url }}"
+                data-field-name="{{ ngModel }}"
+        {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"{% else %}{{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}
+        >
+        {{ 'form.label.multiple_choice %count%' | trans({ '%count%' : '{{ (choices | filter:{ selected: true }).length }}' }, translation_domain) }}
+        </button>
+
+        <select class="hidden" name="{{ full_name }}[]" multiple ng-model="selectedChoices"
+                ng-options="c.name for c in choices track by c.id"></select>
+    {% endspaceless %}
+
+{% endblock multiple_choice_widget %}

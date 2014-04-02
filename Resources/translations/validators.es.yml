@@ -1,0 +1,7 @@
+form:
+  required: Campo obligatorio
+  invalid: Campo inválido
+
+validation:
+  errors:
+    message: Vaya, parece que ha habido un error en la validación de tus datos. Por favor, comprueba que todos los datos sean correctos.

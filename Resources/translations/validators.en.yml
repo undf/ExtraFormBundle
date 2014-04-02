@@ -1,0 +1,7 @@
+form:
+  required: This field is mandatory
+  invalid: This field is invalid
+
+validation:
+  errors:
+    message: Oops! An error occurred when validating the form. Please, make sure that all data are correct.
