@@ -25,7 +25,8 @@
     {% spaceless %}
         {% set attr = attr|merge({'class': attr.class|default('') }) %}
         <div data-u-image-upload
-             class="{{ attr.class }}"
+             data-ng-click="(image==defaultImage) ? uploadFile() : removePic()"
+             class="{{ attr.class }} needsclick"
              data-ng-init="image='{{ image_url }}';defaultImage='{{ default_image_url }}'"
              data-u-file-src="image"
              data-u-file-default-src="defaultImage"
@@ -37,13 +38,11 @@
             {{ form_widget(form[name_property], { 'attr': {'style' : 'visibility:hidden;'} }) }}
 
             <a class="btn btn-ml-danger"
-               data-ng-click="removePic()"
                data-ng-show="image!=defaultImage">
                 {{ 'picture.remove'|trans({}, translation_domain) }}
             </a>
 
             <a class="btn btn-primary"
-               data-ng-click="uploadFile()"
                data-ng-show="image==defaultImage">
                 {{ 'picture.upload'|trans({}, translation_domain) }}
             </a>
