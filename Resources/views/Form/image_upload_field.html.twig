@@ -34,7 +34,7 @@
 
             <img class="masked" data-ng-src="{{ '{{image}}' |raw }}" src="{{ image_url }}"/>
 
-            {{ form_widget(form[file_property], { 'attr': {'style' : 'left:-9000px;'} }) }}
+            {{ form_widget(form[file_property], { 'attr': {'style' : 'left:-9000px; position:absolute;'} }) }}
             {{ form_widget(form[name_property], { 'attr': {'style' : 'visibility:hidden;'} }) }}
 
             <a class="btn btn-ml-danger"
