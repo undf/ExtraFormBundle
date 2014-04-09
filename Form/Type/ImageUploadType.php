@@ -2,34 +2,38 @@
 
 namespace Undf\FormBundle\Form\Type;
 
+use InvalidArgumentException;
+use Sonata\MediaBundle\Form\DataTransformer\ProviderDataTransformer;
+use Sonata\MediaBundle\Provider\Pool;
 use Symfony\Component\Form\AbstractType;
-use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Image;
-use Symfony\Component\Validator\ValidatorInterface;
-use Undf\FormBundle\Listener\ImageUploadListener;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class ImageUploadType extends AbstractType
 {
 
+    protected $pool;
+    protected $class;
+
     /**
-     * @var Vich\UploaderBundle\Templating\Helper\UploaderHelper
+     * @param Pool   $pool
+     * @param string $class
      */
-    private $uploader;
-
-
-    public function __construct(UploaderHelper $uploader)
+    public function __construct(Pool $pool, $class)
     {
-        $this->uploader = $uploader;
+        $this->pool = $pool;
+        $this->class = $class;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addModelTransformer(new ProviderDataTransformer($this->pool, array(
+            'provider' => $options['provider'],
+            'context' => $options['context'],
+        )));
         $builder
             ->add($options['file_property'], 'file', array(
                 'required' => $options['required'],
@@ -56,10 +60,11 @@ class ImageUploadType extends AbstractType
             'name_property' => 'imageName',
             'translation_domain' => 'messages',
             'max_size' => '1M',
-            'default_image_url' => ''
-        ));
-        $resolver->setRequired(array(
-            'data_class',
+            'default_image_url' => '',
+            'provider' => 'sonata.media.provider.image',
+            'context' => 'user_gallery',
+            'format' => 'thumbnail',
+            'data_class' => $this->class
         ));
     }
 
@@ -92,11 +97,12 @@ class ImageUploadType extends AbstractType
         $view->vars['name_property'] = $options['name_property'];
         $view->vars['label'] = false;
 
+        $imageUrl = $defaultImageUrl;
         try {
-            $parentData = $form->getParent()->getData();
-            $imageUrl = $this->uploader->asset($parentData, $options['file_property']);
-        } catch (\InvalidArgumentException $e) {
-            $imageUrl = $defaultImageUrl;
+            if($form->getData()) {
+                $imageUrl = $form->getData()->getUrl($options['format']);
+            }
+        } catch (InvalidArgumentException $e) {
         }
         $view->vars['image_url'] = $imageUrl;
     }

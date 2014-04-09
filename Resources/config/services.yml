@@ -2,10 +2,8 @@ services:
   undf.form.type.image_upload:
     class: Undf\FormBundle\Form\Type\ImageUploadType
     arguments:
-      - "@vich_uploader.templating.helper.uploader_helper"
-      - "@validator"
-      - "@doctrine"
-      - "@property_accessor"
+      - "@sonata.media.pool"
+      - "%sonata.media.media.class%"
     tags:
       - { name: form.type, alias: image_upload }
 
