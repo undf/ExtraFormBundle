@@ -5,18 +5,18 @@
     {% spaceless %}
         <button type="button"
                 data-multiple-choice
-                data-choices="choices"
-                data-selected-choices="selectedChoices"
+                data-choices="{{ name }}"
+                data-selected-choices="selected{{ name }}"
                 data-modal-header="{{ attr.placeholder |trans({}, translation_domain) }}"
                 data-api-url="{{ form.vars.api_url }}"
                 data-field-name="{{ ngModel }}"
         {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"{% else %}{{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}
         >
-        {{ attr.placeholder | trans({ '%count%' : '{{ (choices | filter:{ selected: true }).length }}' }, translation_domain) }}
+        {{ attr.placeholder | trans({ '%count%' : '{{ (' ~ name ~ '| filter:{ selected: true }).length }}' }, translation_domain) }}
         </button>
 
-        <select class="hidden" name="{{ full_name }}[]" multiple ng-model="selectedChoices"
-                ng-options="c.name for c in choices track by c.id"></select>
+        <select class="hidden" name="{{ full_name }}[]" multiple ng-model="selected{{ name }}"
+                ng-options="c.name for c in {{ name }} track by c.id"></select>
     {% endspaceless %}
 
 {% endblock multiple_choice_widget %}
