@@ -1,20 +1,4 @@
 services:
-  undf.form.type.image_upload:
-    class: Undf\FormBundle\Form\Type\ImageUploadType
-    arguments:
-      - "@sonata.media.pool"
-      - "%sonata.media.media.class%"
-    tags:
-      - { name: form.type, alias: image_upload }
-
-  undf.form.type.image_upload_listener:
-      class: Undf\FormBundle\Listener\ImageUploadListener
-      arguments:
-        - "@validator"
-        - "@doctrine.orm.default_entity_manager"
-        - "@property_accessor"
-
-
   undf.form.type.datetime_picker:
     class: Undf\FormBundle\Form\Type\DateTimePickerType
     tags:
