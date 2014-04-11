@@ -12,7 +12,7 @@
                 data-field-name="{{ ngModel }}"
         {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"{% else %}{{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}
         >
-        {{ attr.placeholder | trans({ '%count%' : '{{ (' ~ name ~ '| filter:{ selected: true }).length }}' }, translation_domain) }}
+        {{ attr.placeholder | trans({}, translation_domain) }} ({% raw %}{{ ({% endraw %} {{ name }} {% raw %}| filter:{ selected: true }).length }}{% endraw %})</span>
         </button>
 
         <select class="hidden" name="{{ full_name }}[]" multiple ng-model="selected{{ name }}"
