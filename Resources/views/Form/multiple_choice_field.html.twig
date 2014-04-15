@@ -3,20 +3,35 @@
     {% import 'UndfFormBundle:Form:angular_fields_macros.html.twig' as ngMacros %}
     {% set ngModel = ngMacros.ng_model(form, name) %}
     {% spaceless %}
-        <button type="button"
-                data-multiple-choice
-                data-choices="{{ name }}"
-                data-selected-choices="selected{{ name }}"
-                data-modal-header="{{ attr.placeholder |trans({}, translation_domain) }}"
-                data-api-url="{{ form.vars.api_url }}"
-                data-field-name="{{ ngModel }}"
-        {% for attrname, attrvalue in attr %}{% if attrname in ['placeholder', 'title'] %}{{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"{% else %}{{ attrname }}="{{ attrvalue }}"{% endif %}{% endfor %}
-        >
-        {{ attr.placeholder | trans({ '%count%' : '{{ (' ~ name ~ '| filter:{ selected: true }).length }}' }, translation_domain) }}
-        </button>
+        {% set jsonChoicesName = name ~ 'Choices' %}
 
-        <select class="hidden" name="{{ full_name }}[]" multiple ng-model="selected{{ name }}"
-                ng-options="c.name for c in {{ name }} track by c.id"></select>
+        <multiple-choice class="form-group"
+                         choices="{{ jsonChoicesName }}"
+
+                         full-name="{{ full_name }}[]"
+                         field-name="{{ name }}"
+
+                         data-modal-header="{{ attr.placeholder |trans({}, translation_domain) }}"
+                         data-modal-footer="ok"
+
+                         ng-init="{{ jsonChoicesName }}={{ json_choices }}"
+                >
+
+            <button type="button" {% for attrname, attrvalue in attr %}
+                {% if attrname in ['placeholder', 'title'] %}
+                    {{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
+                {% else %}
+                    {{ attrname }}="{{ attrvalue }}"
+                {% endif %}
+            {% endfor %}
+            >
+
+            {{ attr.placeholder | trans({}, translation_domain) }}
+            ( {{ '{{ (' ~ jsonChoicesName ~ ' | filter:{ selected : true }).length' ~'}}'| raw }} )
+            </button>
+
+        </multiple-choice>
+
     {% endspaceless %}
 
 {% endblock multiple_choice_widget %}

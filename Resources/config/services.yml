@@ -15,5 +15,6 @@ services:
     arguments:
       - "@doctrine"
       - "@property_accessor"
+      - "@serializer"
     tags:
       - { name: form.type, alias: multiple_choice }
