@@ -40,16 +40,33 @@ class MultipleChoiceType extends EntityType
             $choice['id'] = $choiceView->data->getId();
             $choice['name'] = $choiceView->data->getName();
 
-            foreach ($form->getData()->toArray() as $selected) {
-                if ($selected->getId() == $choiceView->data->getId()) {
-                    $choice['selected'] = true;
-                    break;
-                }
+            if ($this->isSelectedOption($form, $choiceView->data->getId())) {
+                $choice['selected'] = true;
             }
 
             $choices[] = $choice;
         }
 
         $view->vars['json_choices'] = $this->serializer->serialize($choices, 'json');
+    }
+
+    /**
+     * Decides if the choice should be maked as selected
+     *
+     * @param FormInterface $form
+     * @param $id
+     * @return bool
+     */
+    private function isSelectedOption(FormInterface $form, $id)
+    {
+        if ($form->getData()) {
+            foreach ($form->getData() as $selected) {
+                if ($selected->getId() == $id) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
