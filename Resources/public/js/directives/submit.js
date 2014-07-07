@@ -6,7 +6,7 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
         controller: function($scope, $element, $attrs) {
 
             var formName = $attrs.name || $attrs.ngForm,
-                url = $scope.$eval($attrs.uSubmit),
+                url = $attrs.$attr.evalUrl ? $scope.$eval($attrs.uSubmit) : $attrs.uSubmit,
                 replace = $attrs.replace != "false";
 
             function getSubmitter() {
