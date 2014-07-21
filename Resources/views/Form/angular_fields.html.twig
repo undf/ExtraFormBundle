@@ -53,7 +53,7 @@
 
 {% block label_asterisk %}
     {% if required %}
-        <span>*</span>
+        {%- if render_required_asterisk %} <span class="asterisk">*</span>{% endif %}
     {% endif %}
 {% endblock label_asterisk %}
 
@@ -70,7 +70,7 @@
         </span>
         {% endif %}
         {% if errors|length > 0 %}
-            <attr data-ng-init="{{ rootName ~ '.hasErrors=true' }} "></attr>
+            <attr data-ng-init="{{ rootName ~ '.hasErrors=true;' ~ rootName ~ '.validated=true' }} "></attr>
             {% if error_delay %}
                 {% for child in form %}
                     {% if loop.index == 1 %}
@@ -108,68 +108,66 @@
     {% set ngModel = ngMacros.ng_model(form, name) %}
     {% set rootName = ngMacros.root_name(form) %}
 
-{% spaceless %}
-{% if widget_form_group|default(false) or form.parent == null %}
-    {% if prototype is defined %}
-        {% set data_prototype = 'collection' in form.vars.block_prefixes and not omit_collection_item ? '<div class="collection-item ' ~ widget_items_attr.class|default()|join(' ') ~ '" id="' ~ prototype.vars.id ~ '_control_group">' ~ form_row(prototype) ~ '</div>' : form_row(prototype) %}
-        {% set data_prototype_name = form.vars.form.vars.prototype.vars.name|default('__name__') %}
-        {% set widget_form_group_attr = widget_form_group_attr|merge({'data-prototype': data_prototype, 'data-prototype-name': data_prototype_name})|merge(attr) %}
-    {% endif %}
-    {% if errors|length > 0 %}
-        {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' has-error'}) %}
-    {% endif %}
-
-    {% if form.children|length == 0 %}
-        {% set isInvalid = rootName ~ '["' ~ full_name ~ '"].$invalid' %}
-        {% set isDirty = rootName ~ '["' ~ full_name ~ '"].$dirty' %}
-    {% else %}
-        {% set isInvalid = '(' %}
-        {% set isDirty = '(' %}
-        {% for child in form.children %}
-            {% set isInvalid = isInvalid ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$invalid' %}
-            {% set isDirty = isDirty ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$dirty' %}
-            {% if loop.index < (form.children|length) %}
-                {% set isInvalid = isInvalid ~ ' || ' %}
-                {% set isDirty = isDirty ~ ' || ' %}
+    {% spaceless %}
+        {% if widget_form_group|default(false) or form.parent == null %}
+            {% if 'collection'in form.parent.vars.block_prefixes %} {# i am a collection child #}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({class: widget_form_group_attr.class ~ ' collection-item'}) %}
             {% endif %}
-        {% endfor %}
-        {% set isInvalid = isInvalid ~ ')' %}
-        {% set isDirty = isDirty ~ ')' %}
-    {% endif %}
+            {% if prototype is defined %}
+                {% set data_prototype = form_row(prototype) %}
+                {% set data_prototype_name = form.vars.form.vars.prototype.vars.name|default('__name__') %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({'data-prototype': data_prototype, 'data-prototype-name': data_prototype_name, 'data-collection-container': null })|merge(attr) %}
+            {% endif %}
+            {# collection item adds class to form-group #}
+            {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class ~ ' ' ~ id ~ '_form_group'}) %}
 
-    {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ng-class: {"has-error":' ~ isInvalid ~ ' && (' ~ isDirty ~ ' || ' ~ rootName ~ '.validated)}'}) %}
-    {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
-        {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' ' ~ attr.class}) %}
-    {% endif %}
-    <div {% for attrname,attrvalue in widget_form_group_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-    {# a form item containing the field in block_prefixes is a near subform or a field directly #}
-    {% if (form|length > 0 and form.parent != null)
-    and 'field' not in form.vars.block_prefixes %}
-        {% if show_child_legend %}
-            {{ block('form_legend') }}
-        {% elseif label_render %}
-            {{ form_label(form, label|default(null)) }}
+            {% if errors|length > 0 %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('') ~ ' has-error'}) %}
+            {% endif %}
+
+            {% if form.children|length == 0 %}
+                {% set isInvalid = rootName ~ '["' ~ full_name ~ '"].$invalid' %}
+                {% set isDirty = rootName ~ '["' ~ full_name ~ '"].$dirty' %}
+            {% else %}
+                {% set isInvalid = '(' %}
+                {% set isDirty = '(' %}
+                {% for child in form.children %}
+                    {% set isInvalid = isInvalid ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$invalid' %}
+                    {% set isDirty = isDirty ~ rootName ~ '["' ~ full_name ~ '[' ~ child.vars.name ~']"].$dirty' %}
+                    {% if loop.index < (form.children|length) %}
+                        {% set isInvalid = isInvalid ~ ' || ' %}
+                        {% set isDirty = isDirty ~ ' || ' %}
+                    {% endif %}
+                {% endfor %}
+                {% set isInvalid = isInvalid ~ ')' %}
+                {% set isDirty = isDirty ~ ')' %}
+            {% endif %}
+
+            {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default(''), 'data-ng-class': '{"has-error":' ~ isInvalid ~ ' && (' ~ isDirty ~ ' || ' ~ rootName ~ '.validated)}'}) %}
+            {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('row') ~ ' ' ~ attr.class}) %}
+            {% endif %}
+            <div{% if help_widget_popover.title is not sameas(null) %}{{ block('help_widget_popover') }}{% endif %} {% for attrname,attrvalue in widget_form_group_attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>
+            {# a form item containing the field in block_prefixes is a near subform or a field directly #}
+            {% if (form|length > 0 and form.parent != null)
+            and 'field' not in form.vars.block_prefixes %}
+                {% if show_child_legend %}
+                    {{ block('form_legend') }}
+                {% elseif label_render %}
+                    {{ form_label(form, label|default(null)) }}
+                {% endif %}
+            {% else %}
+                {% if label_render %}
+                    {{ form_label(form, label|default(null)) }}
+                {% endif %}
+            {% endif %}
+        {% else %}
+            {% if label_render %}
+                {{ form_label(form, label|default(null)) }}
+            {% endif %}
         {% endif %}
-    {% else %}
-        {% if label_render %}
-            {{ form_label(form, label|default(null)) }}
-        {% endif %}
-    {% endif %}
-{% else %}
-    {% if label_render %}
-        {{ form_label(form, label|default(null)) }}
-    {% endif %}
-{% endif %}
-
-{% if horizontal and not label_render %}
-    <label class="{{ horizontal_label_class }} control-label"></label>
-{% endif %}
-
-{% if horizontal %}
-<div class="{{ horizontal_input_wrapper_class }}">
-    {% endif %}
     {% endspaceless %}
-    {% endblock widget_form_group_start %}
+{% endblock widget_form_group_start %}
 
     {% block password_widget %}
         {% spaceless %}
