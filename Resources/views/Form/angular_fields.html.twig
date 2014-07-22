@@ -316,7 +316,7 @@
     {% spaceless %}
         {% if widget_remove_btn|default(null) %}
             {% set button_type = 'remove' %}
-            {% set button_values = widget_remove_btn|merge({icon: '33', icon_color: 'red', label: null, attr: {class: 'btn btn-icon pull-right'} }) %}
+            {% set button_values = widget_remove_btn|merge({icon: 'ml-icon-32 danger', icon_color: 'red', label: null, attr: {class: 'form-item-action'} }) %}
             {{ block('collection_button') }}
         {% endif %}
     {% endspaceless %}
@@ -325,7 +325,7 @@
 {% block collection_button %}
     <a {% for attrname,attrvalue in button_values.attr %} {{attrname}}="{{attrvalue}}"{% endfor %} data-collection-{{ button_type }}-btn=".{{ form.vars['id'] }}_form_group">
     {% if button_values.icon != "" %}
-        <i class="ml-icon-{{ button_values.icon }} {% if button_values.icon_color is not null %}icon-{{ button_values.icon_color }}{% endif %}"></i>
+        <i class="{{ button_values.icon }} {% if button_values.icon_color is not null %}icon-{{ button_values.icon_color }}{% endif %}"></i>
     {% endif %}
     {{ button_values.label|trans({}, translation_domain) }}
     </a>
