@@ -305,7 +305,7 @@
         {% if widget_add_btn|default(null) %}
             {% set button_type = 'add' %}
             {% set button_values = widget_add_btn|merge({attr: {class: widget_add_btn.attr.class|default('btn btn-primary') ~ ' btn-block'} }) %}
-            <div class="padding-add-y-20 col-lg-9">
+            <div class="padding-add-y-10 col-lg-9">
                 {{ block('collection_button') }}
             </div>
         {% endif %}
