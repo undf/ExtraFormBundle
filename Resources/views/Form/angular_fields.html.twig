@@ -116,7 +116,12 @@
             {% if prototype is defined %}
                 {% set data_prototype = form_row(prototype) %}
                 {% set data_prototype_name = form.vars.form.vars.prototype.vars.name|default('__name__') %}
-                {% set widget_form_group_attr = widget_form_group_attr|merge({'data-prototype': data_prototype, 'data-prototype-name': data_prototype_name, 'data-collection-container': null })|merge(attr) %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({
+                    'data-prototype': data_prototype,
+                    'data-prototype-name': data_prototype_name,
+                    'data-prototype-label': form.vars.prototype.vars.label | trans({'%item_count%': '__item_count__'}, translation_domain),
+                    'data-collection-container': null
+                })|merge(attr) %}
             {% endif %}
             {# collection item adds class to form-group #}
             {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class ~ ' ' ~ id ~ '_form_group'}) %}
@@ -274,3 +279,54 @@
     {% endif %}
 {% endspaceless %}
 {% endblock checkbox_widget %}
+
+
+{% block form_row %}
+    {% spaceless %}
+        {% if 'tab' in form.vars.block_prefixes %}
+            {{ block('form_tab') }}
+        {% else %}
+            {% set attr = attr|merge({'class': attr.class|default('') ~ (errors|length > 0 ? ' has-error' : '') }) %}
+            {{ block('widget_form_group_start') }}
+            {% if 'collection' in form.parent.vars.block_prefixes and widget_remove_btn|default(null) %}
+                {{ block('form_widget_remove_btn') }}
+            {% endif -%}
+            {{ widget_prefix|trans({}, translation_domain)|raw }} {{ form_widget(form, _context) }} {{ widget_suffix|trans({}, translation_domain)|raw }}
+            {{ block('widget_form_group_end') }}
+            {% if 'collection' in form.vars.block_prefixes and widget_add_btn|default(null) %}
+                {{ block('form_widget_add_btn') }}
+            {% endif %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_row %}
+
+{% block form_widget_add_btn %}
+    {% spaceless %}
+        {% if widget_add_btn|default(null) %}
+            {% set button_type = 'add' %}
+            {% set button_values = widget_add_btn|merge({attr: {class: widget_add_btn.attr.class|default('btn btn-primary') ~ ' btn-block'} }) %}
+            <div class="padding-add-y-20 col-lg-9">
+                {{ block('collection_button') }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_widget_add_btn %}
+
+{% block form_widget_remove_btn %}
+    {% spaceless %}
+        {% if widget_remove_btn|default(null) %}
+            {% set button_type = 'remove' %}
+            {% set button_values = widget_remove_btn|merge({icon: '33', icon_color: 'red', label: null, attr: {class: 'btn btn-icon pull-right'} }) %}
+            {{ block('collection_button') }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_widget_remove_btn %}
+
+{% block collection_button %}
+    <a {% for attrname,attrvalue in button_values.attr %} {{attrname}}="{{attrvalue}}"{% endfor %} data-collection-{{ button_type }}-btn=".{{ form.vars['id'] }}_form_group">
+    {% if button_values.icon != "" %}
+        <i class="ml-icon-{{ button_values.icon }} {% if button_values.icon_color is not null %}icon-{{ button_values.icon_color }}{% endif %}"></i>
+    {% endif %}
+    {{ button_values.label|trans({}, translation_domain) }}
+    </a>
+{% endblock collection_button %}

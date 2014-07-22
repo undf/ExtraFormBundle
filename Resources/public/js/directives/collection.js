@@ -10,6 +10,15 @@ uFormUtils
             restrict: 'A',
             transclude: false,
             controller: function($scope, $element, $attrs) {
+                $scope.setLabels = function() {
+                    var prototypeLabel = $attrs.prototypeLabel,
+                        labels = $element.find('.collection-item .control-label');
+
+                    angular.forEach(labels, function(label, key) {
+                        angular.element(label).text(prototypeLabel.replace(replace_label_pattern, key + 1));
+                    })
+                }
+
                 $scope.add = function() {
                     var index, rowContent;
 
@@ -25,18 +34,13 @@ uFormUtils
 
                 $scope.remove = function(elemClass) {
                     $element.find(elemClass).remove();
+                    $scope.setLabels();
                 }
             },
             compile: function() {
                 return {
                     pre: function(scope, formElement, attr) {
-                        var labels = formElement.find('.collection-item .control-label');
-                        angular.forEach(labels, function(label, key) {
-                            label = angular.element(label)
-
-                            var html = label.html().replace(replace_label_pattern, key + 1);
-                            label.html(html);
-                        })
+                        scope.setLabels()
                     }
                 };
             }
