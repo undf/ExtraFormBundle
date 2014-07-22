@@ -24,10 +24,10 @@ uFormUtils
 
                     index = $element.find('.collection-items').find('.collection-item').length;
 
-                    rowContent = $attrs.prototype.replace(replace_label_pattern, index + 1);
-                    rowContent = rowContent.replace(replace_pattern, index);
+                    rowContent = $attrs.prototype.replace(replace_pattern, index);
 
                     $compile(rowContent)($scope, function(clonedElement) {
+                        clonedElement.find('.control-label').text($attrs.prototypeLabel.replace(replace_label_pattern, index + 1));
                         $element.find('.collection-items').append(clonedElement);
                     })
                 }
