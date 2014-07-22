@@ -8,7 +8,7 @@
     id="{{ id }}" name="{{ full_name }}"{% if read_only %} readonly="readonly"{% endif %}{% if disabled %} disabled="disabled"{% endif %}{% if required %} required="required"{% endif %}{% if max_length %} maxlength="{{ max_length }}"{% endif %}{% if pattern %} pattern="{{ pattern }}"{% endif %}
     {% if ('radio' not in form.vars.block_prefixes) and ('checkbox' not in form.vars.block_prefixes) %}
         ng-model="{{ ngModel }}"
-        {% if type|default('text') == 'number' %}
+        {% if type|default('text') == 'number' and value is not empty %}
             ng-init='{{ ngModel }} = {{ value }}'
         {% else %}
             {% if value is not empty and value is not iterable %}ng-init="{{ ngModel }} = '{{ value|replace({"\'": "\\'"}) }}'"{% endif %}
@@ -53,7 +53,7 @@
 
 {% block label_asterisk %}
     {% if required %}
-        {%- if render_required_asterisk %} <span class="asterisk">*</span>{% endif %}
+        {% if render_required_asterisk %} <span class="asterisk">*</span>{% endif %}
     {% endif %}
 {% endblock label_asterisk %}
 
@@ -89,7 +89,7 @@
                     {% endfor %}
                 {% else %}
                     {% set childForm = form.parent ? rootName ~ '["' ~ full_name ~ '"]' : rootName %}
-                    <span class="help-{{ block('error_type') }}" ng-show="{{ childForm ~ '.$pristine' }}">
+                    <span class="help-{{ block('error_type') }}" data-ng-show="{{ childForm ~ '.$pristine' }}">
                     {% set error = errors|first %}
                     {{ error.messagePluralization is null
                     ? error.messageTemplate|trans(error.messageParameters, 'validators')
@@ -149,6 +149,9 @@
             {% endif %}
 
             {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default(''), 'data-ng-class': '{"has-error":' ~ isInvalid ~ ' && (' ~ isDirty ~ ' || ' ~ rootName ~ '.validated)}'}) %}
+            {% if errors|length > 0 %}
+                {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class ~ ' has-error'}) %}
+            {% endif %}
             {% if 'collection' in form.vars.block_prefixes and attr.class is defined %}
                 {% set widget_form_group_attr = widget_form_group_attr|merge({'class': widget_form_group_attr.class|default('row') ~ ' ' ~ attr.class}) %}
             {% endif %}
@@ -292,10 +295,10 @@
                 {{ block('form_widget_remove_btn') }}
             {% endif -%}
             {{ widget_prefix|trans({}, translation_domain)|raw }} {{ form_widget(form, _context) }} {{ widget_suffix|trans({}, translation_domain)|raw }}
-            {{ block('widget_form_group_end') }}
             {% if 'collection' in form.vars.block_prefixes and widget_add_btn|default(null) %}
                 {{ block('form_widget_add_btn') }}
             {% endif %}
+            {{ block('widget_form_group_end') }}
         {% endif %}
     {% endspaceless %}
 {% endblock form_row %}
@@ -330,3 +333,42 @@
     {{ button_values.label|trans({}, translation_domain) }}
     </a>
 {% endblock collection_button %}
+
+{% block form_label %}
+    {% if 'checkbox' not in block_prefixes or widget_checkbox_label in ['label', 'both'] %}
+        {% spaceless %}
+            {% if label is not sameas(false) %}
+                {% if label is empty %}
+                    {% set label = name|humanize %}
+                {% endif %}
+                {% if not compound %}
+                    {% set label_attr = label_attr|merge({'for': id}) %}
+                {% endif %}
+                {% set label_attr_class = ' control-label ' %}
+                {% if horizontal %}
+                    {% set label_attr_class = label_attr_class ~ horizontal_label_class %}
+                {% endif %}
+                {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ label_attr_class ~ (required ? ' required' : ' optional') }) %}
+                <label{% for attrname,attrvalue in label_attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>
+                {{ label|trans({}, translation_domain) }}
+                {{- block('label_asterisk') }}
+                {#
+                    Remove widget_add_btn from the label, now it'is added at the botton of the collection. See block form_row.
+                    {% if 'collection' in form.vars.block_prefixes and widget_add_btn|default(null) %}
+                        {{ block('form_widget_add_btn') }}
+                    {% endif %}
+                #}
+                {% if help_label %}
+                    {{ block('help_label') }}
+                {% endif %}
+                {% if help_label_tooltip.title %}
+                    {{ block('help_label_tooltip') }}
+                {% endif %}
+                {% if help_label_popover.title %}
+                    {{ block('help_label_popover') }}
+                {% endif %}
+                </label>
+            {% endif %}
+        {% endspaceless %}
+    {% endif %}
+{% endblock form_label %}
