@@ -34,19 +34,30 @@ class MultipleChoiceType extends EntityType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $choices = array();
-        foreach ($view->vars['choices'] as $choiceView) {
+        foreach ($view->vars['choices'] as $group => $choiceView) {
 
-            $choice = array();
-            $choice['id'] = $choiceView->data->getId();
-            $choice['name'] = $choiceView->data->getName();
+            $choiceViews = is_array($choiceView) ? $choiceView : array($choiceView);
 
-            if ($this->isSelectedOption($form, $choiceView->data->getId())) {
-                $choice['selected'] = true;
+            foreach($choiceViews as $choiceView) {
+                $choice = array();
+                $choice['id'] = $choiceView->data->getId();
+                $choice['name'] = $choiceView->data->getName();
+
+                if ($this->isSelectedOption($form, $choiceView->data->getId())) {
+                    $choice['selected'] = true;
+                }
+
+                if(isset($options['group_by'])) {
+                    if(!isset($choices[$group])) {
+                        $choices[$group] = array();
+                    }
+                    $choices[$group][] = $choice;
+                } else {
+                    $choices[] = $choice;
+                }
             }
-
-            $choices[] = $choice;
         }
-
+        $view->vars['group_by'] = isset($options['group_by']) ? $options['group_by'] : false;
         $view->vars['json_choices'] = $this->serializer->serialize($choices, 'json');
     }
 

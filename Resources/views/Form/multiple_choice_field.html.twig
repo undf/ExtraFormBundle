@@ -5,7 +5,8 @@
     {% spaceless %}
         {% set jsonChoicesName = name ~ 'Choices' %}
 
-        <multiple-choice class="form-group"
+        <multiple-choice {% if group_by %}data-grouped-choices{% endif %}
+                         class="form-group"
                          choices="{{ jsonChoicesName }}"
 
                          data-ng-model="{{ ngModel }}"
@@ -17,7 +18,11 @@
 
                          ng-init="{{ jsonChoicesName }}={{ json_choices }}"
                 >
-
+            <select multiple class="hidden"
+                    data-ng-model="ngModel"
+                    name="{{ full_name }}[]"
+                    data-ng-options="c.name for c in choices|merge">
+            </select>
             <button type="button" {% for attrname, attrvalue in attr %}
                 {% if attrname in ['placeholder', 'title'] %}
                     {{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
@@ -28,7 +33,7 @@
             >
 
             {{ attr.placeholder | trans({}, translation_domain) }}
-            ( {{ '{{ (' ~ jsonChoicesName ~ ' | filter:{ selected : true }).length' ~'}}'| raw }} )
+            ( {{ '{{ (' ~ jsonChoicesName ~ '| merge | filter:{ selected : true }).length' ~'}}'| raw }} )
             </button>
 
         </multiple-choice>
