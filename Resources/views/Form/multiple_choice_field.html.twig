@@ -10,19 +10,14 @@
                          choices="{{ jsonChoicesName }}"
 
                          data-ng-model="{{ ngModel }}"
-                         full-name="{{ full_name }}[]"
+                         full-name="'{{ full_name }}[]'"
                          field-name="{{ name }}"
 
                          data-modal-header="{{ attr.placeholder |trans({}, translation_domain) }}"
                          data-modal-footer="ok"
 
-                         ng-init="{{ jsonChoicesName }}={{ json_choices }}"
+                         ng-init="{{ jsonChoicesName }}={{ json_choices }};{{ ngModel }}=({{ json_choices }}|merge|filter:{selected:true})"
                 >
-            <select multiple class="hidden"
-                    data-ng-model="ngModel"
-                    name="{{ full_name }}[]"
-                    data-ng-options="c.name for c in choices|merge">
-            </select>
             <button type="button" {% for attrname, attrvalue in attr %}
                 {% if attrname in ['placeholder', 'title'] %}
                     {{ attrname }}="{{ attrvalue|trans({}, translation_domain) }}"
