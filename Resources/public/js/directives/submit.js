@@ -68,13 +68,13 @@ uFormUtils.directive('uSubmit', ['$http', '$compile', function($http, $compile) 
                                 for (var i = 1; i < fields.length; i++) {
                                     value = value ? value[fields[i]] : undefined;
                                 }
-                                //Values 'undefined' and 'null' is serialized as a string, so get rid of them.
-                                value = (value === undefined || value === null) ? '' : value;
+                                //Values 'undefined', 'null' and 'false' is serialized as a string, so get rid of them.
+                                value = (value === undefined || value === null || value === false) ? '' : value;
                                 // Multiple Choice transformation
                                 if (angular.isArray(value)) {
                                     angular.forEach(value, function (v, k) {
-                                        formData.append(fieldName, v.id);
-                                    })
+                                        formData.append(fieldName, angular.isDefined(v.id) ? v.id : v);
+                                    });
 
                                     return;
                                 }
